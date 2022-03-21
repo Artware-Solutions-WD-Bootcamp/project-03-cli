@@ -1,7 +1,8 @@
-// here we will store all our auth routes
+//DO import needed modules
 import axios from "axios";
 
-//
+// here we will store all our frontend auth routes
+
 const service = axios.create({
   baseURL: `${process.env.REACT_APP_SERVER_URL}/auth`,
 });
@@ -16,12 +17,19 @@ service.interceptors.request.use((config) => {
   return config;
 });
 
+// new user creation service
 const registerService = (user) => {
   return service.post("/register", user);
 };
 
+// existing user login service
 const loginService = (user) => {
   return service.post("/login", user);
 };
 
-export { registerService, loginService };
+// verify service to avoid login each time user turn back or render update page
+const verifyService = () => {
+  return service.get("/verify")
+}
+
+export { registerService, loginService, verifyService };

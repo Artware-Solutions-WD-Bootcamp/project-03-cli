@@ -1,10 +1,10 @@
 //DO import needed modules
 import axios from "axios";
 
-// here we will store all our frontend user routes
+// here we will store all our frontend charity causes routes
 
 const service = axios.create({
-  baseURL: `${process.env.REACT_APP_SERVER_URL}/users`,
+  baseURL: `${process.env.REACT_APP_SERVER_URL}/causes`,
 });
 
 // send Token on each request
@@ -17,29 +17,29 @@ service.interceptors.request.use((config) => {
   return config;
 });
 
-const getAllUsersService = () => {
+const getAllCausesService = () => {
   return service.get("/");
 };
 
-const addNewUserService = (newUser) => {
-  return service.post("/", newUser);
+const addNewCauseService = (newCause) => {
+  return service.post("/", newCause);
 };
 
-const getUserDetailsService = (id) => {
+const getCauseDetailsService = (id) => {
   return service.get(`/${id}`);
 };
 
-const updateUserService = (id, updatedUser) => {
-  return service.patch(`/${id}`, updatedUser)
+const updateCauseService = (id, updatedCause) => {
+  return service.patch(`/${id}`, updatedCause)
 }
 
-const deleteUserService = (id) => {
+const deleteCauseService = (id) => {
   return service.delete(`/${id}`);
 };
 export {
-  getAllUsersService,
-  addNewUserService,
-  getUserDetailsService,
-  updateUserService,
-  deleteUserService,
+  getAllCausesService,
+  addNewCauseService,
+  getCauseDetailsService,
+  updateCauseService,
+  deleteCauseService,
 };

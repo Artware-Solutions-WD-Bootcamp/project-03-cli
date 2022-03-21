@@ -1,8 +1,10 @@
-import AddUserForm from "../../components/AddUserForm";
+//DO import needed modules
 import { getAllUsersService } from "../../services/user.services";
-
+import { Avatar, Button } from "@mui/material";
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faEraser, faEye, faPencil} from "@fortawesome/free-solid-svg-icons"
 
 function UsersList() {
   //DO create a state to control info
@@ -21,11 +23,26 @@ function UsersList() {
     try {
       //? obtain info from DB
       const response = await getAllUsersService()
-      console.log(response);
       setAllUsers(response.data);
     } catch (err) {
       navigate("/error");
     }
+  };
+
+  const handleAddUserClick = (id) => {
+    navigate(`/users/add`)
+  }
+
+  const handleViewDetailsClick = (id) => {
+    navigate(`/users/details/${id}`)
+  }
+
+  const handleEditClick = (id) => {
+    navigate(`/users/edit/${id}`)
+  }  
+
+  const handleDeleteUserClick = (id) => {
+    navigate(`/users/delete/${id}`)
   };
 
   //DO use loading system to prevent errors
@@ -37,13 +54,17 @@ function UsersList() {
 
   return (
     <div>
-      <AddUserForm getAllTodos={getAllUsers}/>
-
       <h1>Users List</h1>
+      <Button onClick={handleAddUserClick}>Add new user</Button>
+
       {allUsers.map((eachUser, index) => {
         return (
           <div key={index+eachUser.username}>
-          <Link to={`/users/details/${eachUser._id}`}>{eachUser.username}</Link>
+          <Avatar src={eachUser.avatar} alt="avatar"  />&nbsp;
+          {eachUser.username}
+          <Button onClick={() => handleViewDetailsClick(eachUser._id)}><FontAwesomeIcon icon={faEye} color={"green"}/></Button>
+          <Button onClick={() => handleEditClick(eachUser._id)} ><FontAwesomeIcon icon={faPencil} color={"blue"} /></Button>
+          <Button onClick={() => handleDeleteUserClick(eachUser._id)}><FontAwesomeIcon icon={faEraser} color={"red"} /></Button>
           </div>
         )
       })}
