@@ -63,9 +63,10 @@ function UserDelete() {
           </Typography>
           <CardActions>
             <Button
-              onClick={() => handleDeleteUserClick(_id)}
+              onClick={() => handleDeleteUserClick(id)}
               size="small"
               variant="contained"
+              type="submit"
               sx={{ backgroundColor: "black", color: "red" }}
             >
               Delete

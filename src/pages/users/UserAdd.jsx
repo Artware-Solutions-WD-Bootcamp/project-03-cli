@@ -18,6 +18,7 @@ function AddUserForm() {
   const [password, setPassword] = useState("");
   const [level, setLevel] = useState("user");
   const [avatar, setAvatar] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleUsername = (e) => {
     setUsername(e.target.value);
@@ -43,14 +44,18 @@ function AddUserForm() {
       await addNewUserService(newUser);
       navigate("/users");
     } catch (err) {
-      navigate("/error");
+      if (err.response && err.response.status === 400) {
+        setErrorMessage(err.response.data.errorMessage);
+      } else {
+        navigate("/error");
+      }
     }
   };
 
   return (
     <div>
       <h3>Add New User</h3>
-
+      <p>{errorMessage}</p>
       <FormControl>
         <Select value={level} name="level" id="level" onChange={handleLevel}>
           <MenuItem value={"user"}>Select level</MenuItem>

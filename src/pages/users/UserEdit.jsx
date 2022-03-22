@@ -19,6 +19,7 @@ function UserEdit() {
   const [level, setLevel] = useState("");
   const [avatar, setAvatar] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  //const [previousState, setPreviousState] = useState({})
 
   const handleUsername = (e) => {
     setUsername(e.target.value);
@@ -39,6 +40,7 @@ function UserEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+
   useEffect(() => {
     getUserDetails();
   }, []);
@@ -52,16 +54,25 @@ function UserEdit() {
       //setPassword(response.data.password);
       setLevel(response.data.level);
       setAvatar(response.data.avatar);
+
+      //setPreviousState()
     } catch (err) {
       navigate("/error")
     }
   };
 
+//  setPreviousState(){
+//   previousState.username = username
+//   previousState.email = email
+//   previousState.level = level
+//   previousState.avatar = avatar
+// }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      updateUserService(id, { username, email, password, level, avatar });
+      await updateUserService(id, { username, email, password, level, avatar });
       navigate(`/users/details/${id}`);
     } catch (err) {
       if (err.response && err.response.status === 400) {

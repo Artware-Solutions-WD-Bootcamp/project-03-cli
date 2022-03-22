@@ -32,18 +32,18 @@ function UserDetails() {
     } catch (err) {}
   };
 
+  //DO use loading...
   if (!userDetails) {
     return <h3>...Loading</h3>;
   }
 
   const handleEditUserClick = (id) => {
-    navigate(`/users/edit/${userDetails._id}`)
+    navigate(`/users/edit/${id}`)
   }  
 
   const handleDeleteUserClick = (id) => {
-    navigate(`/users/delete/${userDetails._id}`)
+    navigate(`/users/delete/${id}`)
   };
-
 
   const { username, email, level, avatar } = userDetails;
 
@@ -68,8 +68,8 @@ function UserDetails() {
             E-mail: {email}
           </Typography>
           <CardActions>
-            <Button onClick={handleEditUserClick} size="small">Edit</Button>
-            <Button onClick={handleDeleteUserClick} size="small">Delete</Button>
+            <Button onClick={() => handleEditUserClick(id)} size="small">Edit</Button>
+            <Button onClick={() => handleDeleteUserClick(id)} size="small">Delete</Button>
             <Button onClick={() => navigate(-1)} size="small">Turn back</Button>
           </CardActions>
         </CardContent>
