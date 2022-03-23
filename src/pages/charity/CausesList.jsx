@@ -1,41 +1,51 @@
 //DO import needed services
 import { getAllCausesService, addNewCauseService, getCauseDetailsService, updateCauseService, deleteCauseService } from "../../services/cause.services";
-
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faEye, faPencil } from "@fortawesome/free-solid-svg-icons";
 
-import {
-  Avatar,
-  Button,
-  Card,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  FormHelperText,
-  TextField,
-  // Stack,
-} from "@mui/material";
+import { Avatar, Button, Card, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, TextField } from "@mui/material";
 
 function CausesList() {
-
   // Begin add cause modal window routine
-  const [openAddCause, setAddCauseOpen] = useState(false);
-  const handleClickAddCauseOpen = () => { setAddCauseOpen(true) };
-  const handleClickAddCauseClose = () => { setAddCauseOpen(false) };
-
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [url, setUrl] = useState("");
-  const [logo, setLogo] = useState("");
+  const [name, setName] = useState(""); // for CausesList
+  const [description, setDescription] = useState(""); // for CausesList
+  const [url, setUrl] = useState(""); // for CausesList
+  const [logo, setLogo] = useState(""); // for CausesList
+  const [active, setActive] = useState(""); // for CausesDetails and CausesUpdate
+  const [visible, setVisible] = useState(""); // for CausesDetails and CausesUpdate
+  const [assignedAmount, setAssignedAmount] = useState(""); // for CausesDetails and CausesUpdate
+  const [deliveryProof, setDeliveryProof] = useState(""); // for CausesDetails and CausesUpdate
   const [errorMessage, setErrorMessage] = useState("");
-  const handleName = (e) => { setName(e.target.value) };
-  const handleDescription = (e) => { setDescription(e.target.value) };
-  const handleUrl = (e) => { setUrl(e.target.value) };
-  const handleLogo = (e) => { setLogo(e.target.value) };
+  const [openAddCause, setAddCauseOpen] = useState(false); // addCause modal state
+  const [openUpdateCause, setUpdateCauseOpen] = useState(false); // updateCause modal state
+  
+
+
+  const handleClickAddCauseOpen = () => {
+    setAddCauseOpen(true);
+    setName("");
+    setDescription("");
+    setUrl("");
+    setLogo("");
+  };
+  const handleClickAddCauseClose = () => {
+    setAddCauseOpen(false);
+  };
+
+  const handleName = (e) => {
+    setName(e.target.value);
+  };
+  const handleDescription = (e) => {
+    setDescription(e.target.value);
+  };
+  const handleUrl = (e) => {
+    setUrl(e.target.value);
+  };
+  const handleLogo = (e) => {
+    setLogo(e.target.value);
+  };
 
   const handleAddCauseSubmit = async () => {
     try {
@@ -54,18 +64,16 @@ function CausesList() {
   // End add cause modal window routine
 
   // Begin update cause modal window routine
-  const [openUpdateCause, setUpdateCauseOpen] = useState(false);
   const handleClickUpdateCauseOpen = (id) => {
-     setUpdateCauseOpen(true)
-     
-     };
-  const handleClickUpdateCauseClose = () => { setUpdateCauseOpen(false) };
+    setUpdateCauseOpen(true);
+  };
+  const handleClickUpdateCauseClose = () => {
+    setUpdateCauseOpen(false);
+  };
 
   const handleClickUpdateSubmit = async () => {
-
     // update cause routine
-
-  }
+  };
 
   // End update cause modal window routine
 
@@ -76,7 +84,9 @@ function CausesList() {
   const navigate = useNavigate();
 
   //DO useEffect to look for info
-  useEffect(() => { getAllCauses() }, []);
+  useEffect(() => {
+    getAllCauses();
+  }, []);
 
   //DO async function to obtain data from DB
   const getAllCauses = async () => {
@@ -89,10 +99,18 @@ function CausesList() {
     }
   };
 
-  const handleAddCauseClick = () => { navigate(`/causes/add`) };
-  const handleViewDetailsClick = (id) => { navigate(`/causes/details/${id}`) };
-  const handleEditClick = (id) => { navigate(`/causes/edit/${id}`) };
-  const handleDeleteCauseClick = (id) => { navigate(`/causes/delete/${id}`) };
+  const handleAddCauseClick = () => {
+    navigate(`/causes/add`);
+  };
+  const handleViewDetailsClick = (id) => {
+    navigate(`/causes/details/${id}`);
+  };
+  const handleEditClick = (id) => {
+    navigate(`/causes/edit/${id}`);
+  };
+  const handleDeleteCauseClick = (id) => {
+    navigate(`/causes/delete/${id}`);
+  };
 
   //DO use loading system to prevent errors
   if (!allCauses) {
@@ -103,8 +121,12 @@ function CausesList() {
     <div>
       <h1>Causes</h1>
       <Button onClick={handleAddCauseClick}>Add new charitable cause</Button>
-      <Button variant="outlined" onClick={handleClickAddCauseOpen}> Add new charitable cause (Modal) </Button>
-      <Button variant="outlined" onClick={handleClickUpdateCauseOpen}> Update charitable cause (Modal) </Button>
+      <Button variant="outlined" onClick={handleClickAddCauseOpen}>
+        Add new charitable cause
+      </Button>
+      <Button variant="outlined" onClick={handleClickUpdateCauseOpen}>
+        Update charitable cause
+      </Button>
 
       {/* Begin all causes list */}
       {allCauses.map((eachCause, index) => {
@@ -146,8 +168,12 @@ function CausesList() {
               <FormHelperText id="logo-helper-text"> Cause cover image </FormHelperText>
 
               <DialogActions>
-                <Button type="submit" variant="outlined" onClick={handleAddCauseSubmit}> Add </Button>
-                <Button type="submit" variant="outlined" onClick={handleClickAddCauseClose}> Cancel </Button>
+                <Button type="submit" variant="outlined" onClick={handleAddCauseSubmit}>
+                  Add
+                </Button>
+                <Button type="submit" variant="outlined" onClick={handleClickAddCauseClose}>
+                  Cancel
+                </Button>
               </DialogActions>
             </FormControl>
           </DialogContent>
@@ -173,16 +199,33 @@ function CausesList() {
               <TextField label="Logo: " name="logo" id="logo" value={logo} aria-describedby="logo-helper-text" onChange={handleLogo} />
               <FormHelperText id="logo-helper-text"> Cause cover image </FormHelperText>
 
+              <TextField label="Active: " name="active" id="active" value={active} aria-describedby="active-helper-text" onChange={handleLogo} />
+              <FormHelperText id="active-helper-text"> Cause status (active/finished) </FormHelperText>
+
+              <TextField label="Visible: " name="visible" id="visible" value={visible} aria-describedby="visible-helper-text" onChange={handleLogo} />
+              <FormHelperText id="visible-helper-text"> Cause visibility (visible/hidden) </FormHelperText>
+
+              <TextField label="Assigned amount: " name="assignedAmount" id="assignedAmount" value={assignedAmount} aria-describedby="assignedAmount-helper-text" onChange={handleLogo} />
+              <FormHelperText id="assignedAmount-helper-text"> Cause assigned amount </FormHelperText>
+
+              <TextField label="Delivery proof: " name="deliveryProof" id="deliveryProof" value={deliveryProof} aria-describedby="deliveryProof-helper-text" onChange={handleLogo} />
+              <FormHelperText id="deliveryProof-helper-text"> Proof of donation delivery </FormHelperText>
+
               <DialogActions>
-                <Button type="submit" variant="outlined" onClick={handleClickUpdateSubmit}> Add </Button>
-                <Button type="submit" variant="outlined" onClick={handleClickUpdateCauseClose}> Cancel </Button>
+                <Button type="submit" variant="outlined" onClick={handleClickUpdateSubmit}>
+                  {" "}
+                  Add{" "}
+                </Button>
+                <Button type="submit" variant="outlined" onClick={handleClickUpdateCauseClose}>
+                  {" "}
+                  Cancel{" "}
+                </Button>
               </DialogActions>
             </FormControl>
           </DialogContent>
         </Dialog>
       </div>
       {/* End update cause modal window */}
-
     </div>
   );
 }
