@@ -1,5 +1,5 @@
 //DO import needed modules
-import { getAllCollabsService } from "../../services/collab.services";
+import { getAllCollabsService } from "../services/collab.services";
 import { Avatar, Button } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";

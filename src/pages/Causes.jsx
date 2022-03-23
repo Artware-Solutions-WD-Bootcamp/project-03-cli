@@ -1,5 +1,5 @@
 //DO import needed services
-import { getAllCausesService, addNewCauseService, getCauseDetailsService, updateCauseService, deleteCauseService } from "../../services/cause.services";
+import { getAllCausesService, addNewCauseService, getCauseDetailsService, updateCauseService, deleteCauseService } from "../services/cause.services";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -296,7 +296,6 @@ function CausesList() {
 
       {/* Begin modal window cause detail */}
       <Dialog open={modalStatusCauseDetail} onClose={handleClickDetailCauseClose}>
-        <DialogTitle>Add new charitable cause</DialogTitle>
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
             <CardMedia component="img" height="140" image={logo} alt="charity cause image" />
