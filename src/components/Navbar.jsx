@@ -5,7 +5,7 @@ import { ThemeContext } from "../context/theme.context.js";
 import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShuffle, faRightToBracket, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { AppBar, Button, Toolbar, Typography } from "@mui/material";
+import { AppBar, Button, Toolbar, Tooltip, Typography } from "@mui/material";
 
 function NavBar(props) {
   const { isLoggedIn, setIsLoggedIn } = props;
@@ -21,7 +21,7 @@ function NavBar(props) {
 
   return (
     <React.Fragment>
-      <AppBar position="static" color="primary" enableColorOnDark>
+      <AppBar position="static" enableColorOnDark style={{ background: 'lightgray' }}>
         <Toolbar>
 
           { <Link to="/" variant="body2" color="inherit">Home</Link> }
@@ -40,19 +40,27 @@ function NavBar(props) {
           
           {!isLoggedIn && ( <Link to="/register" variant="body2" color="inherit">Register</Link> )}
           &nbsp;&nbsp;
-          {!isLoggedIn && ( <Link to="/login" variant="body2" color="inherit"> <FontAwesomeIcon icon={faRightToBracket} color={"white"} /> </Link> )}
+          {!isLoggedIn && (
+            <Tooltip title="Login">
+              <Link to="/login" variant="body2" color="inherit"> <FontAwesomeIcon icon={faRightToBracket} color={"white"} /> </Link>
+            </Tooltip>
+              )}
           &nbsp;&nbsp;
           {isLoggedIn && (
+          <Tooltip title="Logout">
             <Button color="inherit" onClick={handleLogOut} style={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px'}}>
               <FontAwesomeIcon icon={faRightFromBracket} color={"white"} />
             </Button>
+          </Tooltip>
           )}
           &nbsp;&nbsp;
+          <Tooltip title="Change theme">
           {
             <Button color="inherit" onClick={() => setDarkMode(!darkMode)} style={{maxWidth: '30px', maxHeight: '30px', minWidth: '30px', minHeight: '30px'}}>
               <FontAwesomeIcon icon={faShuffle} color={"white"} />
             </Button>
           }
+          </Tooltip>
         </Toolbar>
       </AppBar>
     </React.Fragment>

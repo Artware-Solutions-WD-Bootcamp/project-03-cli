@@ -17,11 +17,11 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
 //DO import Charitable Causes related pages
-import CauseAdd from "./pages/charity/CauseAdd";
 import CausesList from "./pages/charity/CausesList";
-import CauseDetails from "./pages/charity/CauseDetails";
-import CauseEdit from "./pages/charity/CauseEdit";
-import CauseDelete from "./pages/charity/CauseDelete";
+//import CauseDetails from "./pages/charity/CauseDetails";
+//import CauseAdd from "./pages/charity/CauseAdd";
+//import CauseEdit from "./pages/charity/CauseEdit";
+//import CauseDelete from "./pages/charity/CauseDelete";
 
 //DO import Collaborator related pages
 import CollabAdd from "./pages/collaborators/CollabAdd";
@@ -40,9 +40,8 @@ import UserDelete from "./pages/users/UserDelete";
 //DO import stylesheets
 import "./App.css";
 
-
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [ isLoggedIn, setIsLoggedIn ] = useState(false);
 
   const { switchTheme } = useContext(ThemeContext);
 
@@ -71,10 +70,10 @@ function App() {
         <Route path="/" element={<Home />} />
 
         <Route path="/causes" element={<CausesList />} />
-        <Route path="/causes/add" element={<CauseAdd />} />
-        <Route path="/causes/details/:id" element={<CauseDetails />} />
-        <Route path="/causes/edit/:id" element={<CauseEdit />} />
-        <Route path="/causes/delete/:id" element={<CauseDelete />} />
+        {/* <Route path="/causes/add" element={<CauseAdd />} /> */}
+        {/* <Route path="/causes/details/:id" element={<CauseDetails />} /> */}
+        {/* <Route path="/causes/edit/:id" element={<CauseEdit />} /> */}
+        {/* <Route path="/causes/delete/:id" element={<CauseDelete />} /> */}
 
         <Route path="/collabs" element={<CollabsList />} />
         <Route path="/collabs/add" element={<CollabAdd />} />

@@ -2,3 +2,8 @@
   text-align: center;
   min-height: 100vh;
 }
+
+.data-list{
+  max-width: 500px;
+  margin: auto;
+}
