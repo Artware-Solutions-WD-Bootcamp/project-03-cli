@@ -8,7 +8,9 @@ import { faEraser, faEye, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { Avatar, Button, Card, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, TextField } from "@mui/material";
 
 function CausesList() {
-  // Begin add cause modal window routine
+  //DO create a state to control info
+  const [allCauses, setAllCauses] = useState(null); // allCauses array
+
   const [name, setName] = useState(""); // for CausesList
   const [description, setDescription] = useState(""); // for CausesList
   const [url, setUrl] = useState(""); // for CausesList
@@ -21,31 +23,23 @@ function CausesList() {
   const [openAddCause, setAddCauseOpen] = useState(false); // addCause modal state
   const [openUpdateCause, setUpdateCauseOpen] = useState(false); // updateCause modal state
   
+  
+  
+  // add cause modal window routine
+  const handleClickAddCauseOpen = () => { setAddCauseOpen(true); setName(""); setDescription(""); setUrl(""); setLogo("");  };
+  const handleClickAddCauseClose = () => { setAddCauseOpen(false) };
+
+  // update cause modal window routine
+  const handleClickUpdateCauseOpen = (id) => { setUpdateCauseOpen(true) };
+  const handleClickUpdateCauseClose = () => { setUpdateCauseOpen(false) };
+  const handleClickUpdateSubmit = async () => {  /* update cause routine */ };
 
 
-  const handleClickAddCauseOpen = () => {
-    setAddCauseOpen(true);
-    setName("");
-    setDescription("");
-    setUrl("");
-    setLogo("");
-  };
-  const handleClickAddCauseClose = () => {
-    setAddCauseOpen(false);
-  };
 
-  const handleName = (e) => {
-    setName(e.target.value);
-  };
-  const handleDescription = (e) => {
-    setDescription(e.target.value);
-  };
-  const handleUrl = (e) => {
-    setUrl(e.target.value);
-  };
-  const handleLogo = (e) => {
-    setLogo(e.target.value);
-  };
+  const handleName = (e) => { setName(e.target.value) };
+  const handleDescription = (e) => { setDescription(e.target.value) };
+  const handleUrl = (e) => { setUrl(e.target.value) };
+  const handleLogo = (e) => { setLogo(e.target.value) };
 
   const handleAddCauseSubmit = async () => {
     try {
@@ -58,27 +52,9 @@ function CausesList() {
         setErrorMessage(err.response.data.errorMessage);
       } else {
         navigate("/error");
-      }
-    }
-  };
-  // End add cause modal window routine
-
-  // Begin update cause modal window routine
-  const handleClickUpdateCauseOpen = (id) => {
-    setUpdateCauseOpen(true);
-  };
-  const handleClickUpdateCauseClose = () => {
-    setUpdateCauseOpen(false);
-  };
-
-  const handleClickUpdateSubmit = async () => {
-    // update cause routine
-  };
-
-  // End update cause modal window routine
-
-  //DO create a state to control info
-  const [allCauses, setAllCauses] = useState(null);
+      }    
+    }    
+  };    
 
   //DO navigator hook
   const navigate = useNavigate();
