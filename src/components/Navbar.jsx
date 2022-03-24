@@ -21,13 +21,13 @@ function NavBar(props) {
 
   return (
     <React.Fragment>
-      <AppBar position="static" enableColorOnDark style={{ background: 'lightgray' }}>
+      <AppBar position="static" enableColorOnDark={true} style={{ background: 'lightgray' }}>
         <Toolbar>
 
           { <Link to="/" variant="body2" color="inherit">Home</Link> }
           &nbsp;&nbsp;
 
-          { <Link to="/causes" variant="body2" color="inherit">Carity Causes</Link> }
+          { <Link to="/causes" variant="body2" color="inherit">Charity Causes</Link> }
           &nbsp;&nbsp;
           
           { <Link to="/collabs" variant="body2" color="inherit">Collaborators</Link> }

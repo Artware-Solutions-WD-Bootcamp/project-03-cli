@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faEye, faPencil } from "@fortawesome/free-solid-svg-icons";
-import { Avatar, Button, Card, CardActions, CardContent, CardMedia, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { Avatar, Alert, Button, Card, CardActions, CardContent, CardMedia, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Link, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
 
 function CollabList() {
   //DO create a state to control info
@@ -35,7 +35,7 @@ function CollabList() {
 
   const [visibility, setVisibility] = useState("");
   const handleVisibility = (e) => {
-    setVisibility(e.target.value);
+    setVisibility(e.target.checked);
   };
 
   const [modalStatusCollabDetail, setModalStatusCollabDetail] = useState(false); // updateCause modal state
@@ -217,7 +217,7 @@ function CollabList() {
   return (
     <div className="data-list">
       <h1>Collab List</h1>
-      <p>{errorMessage}</p>
+      {/* <p>{errorMessage}</p> */}
       <Button onClick={handleClickAddCollabOpen} variant="outlined" style={{ marginBottom: "30px" }}>
         Add new collaborator
       </Button>
@@ -283,13 +283,12 @@ function CollabList() {
               <Typography variant="body2" color="text.secondary">
                 Description: {description}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                URL: {registerUrl}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Visibility: <Checkbox checked={visibility} />
-              </Typography>
               <CardActions>
+                <Link href={registerUrl} target="blank">
+                  <Button size="small" variant="outlined" sx={{ backgroundColor: "lightGreen", marginRight: 2 }}>
+                    Visit site
+                  </Button>
+                </Link>
                 <Button onClick={handleClickDetailCollabClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                   Turn back
                 </Button>
@@ -305,10 +304,12 @@ function CollabList() {
         <DialogTitle>Add new collaborator</DialogTitle>
         <DialogContent>
           <FormControl>
-            <TextField label="Collaborator name*: " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
+          {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
+
+            <TextField label="Collaborator name:* " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
             <FormHelperText id="name-helper-text"> Collaborator name (required) </FormHelperText>
 
-            <TextField label="Description*: " name="description" id="description" value={description} aria-describedby="description-helper-text" onChange={handleDescription} />
+            <TextField label="Description:* " name="description" id="description" value={description} aria-describedby="description-helper-text" onChange={handleDescription} />
             <FormHelperText id="description-helper-text"> Collaborator description (required) </FormHelperText>
 
             <TextField label="Register URL: " name="registerUrl" id="registerUrl" value={registerUrl} aria-describedby="uregisterUrlrl-helper-text" onChange={handleRegisterUrl} />
@@ -335,10 +336,12 @@ function CollabList() {
         <DialogTitle>Update collaborator</DialogTitle>
         <DialogContent>
           <FormControl>
-            <TextField label="Cause name*: " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
+          {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
+
+            <TextField label="Cause name:* " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
             <FormHelperText id="name-helper-text"> Collaborator name (required) </FormHelperText>
 
-            <TextField label="Description*: " name="description" id="description" value={description} aria-describedby="description-helper-text" onChange={handleDescription} />
+            <TextField label="Description:* " name="description" id="description" value={description} aria-describedby="description-helper-text" onChange={handleDescription} />
             <FormHelperText id="description-helper-text"> Collaborator description (required) </FormHelperText>
 
             <TextField label="Register URL: " name="registerUrl" id="registerUrl" value={registerUrl} aria-describedby="registerUrl-helper-text" onChange={handleRegisterUrl} />
@@ -369,6 +372,8 @@ function CollabList() {
         <DialogTitle>Delete collaborator</DialogTitle>
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
+          {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
+
             <CardMedia component="img" height="140" image={logo} alt="charity cause image" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
@@ -381,8 +386,11 @@ function CollabList() {
                 URL: {registerUrl}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-              Visibility: <Checkbox checked={visibility} />
+                Visibility: <Checkbox checked={visibility} />
               </Typography>
+              <Stack sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }} spacing={2}>
+                <Alert severity="error">{"ATTENTION! This action can not be undone!"}</Alert>
+              </Stack>
               <CardActions>
                 <Button onClick={handleClickDeleteCollabSubmit} size="small" variant="outlined" sx={{ backgroundColor: "red" }}>
                   Delete
@@ -396,9 +404,6 @@ function CollabList() {
         </DialogContent>
       </Dialog>
       {/* End modal window collaborator delete */}
-
-
-
     </div>
   );
 }

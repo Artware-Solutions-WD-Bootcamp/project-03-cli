@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faEye, faPencil } from "@fortawesome/free-solid-svg-icons";
-import { Avatar, Button, Card, CardActions, CardContent, CardMedia, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { Avatar, Alert, Button, Card, CardActions, CardContent, CardMedia, Dialog, DialogContent, DialogTitle, FormControl, FormHelperText, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
 
 function UsersList() {
   //DO create a state to control info
   const [allUsers, setAllUsers] = useState(null);
-  
+
   const [userUpdateId, setUserUpdateId] = useState(null);
   const [userDeleteId, setUserDeleteId] = useState(null);
 
@@ -75,7 +75,7 @@ function UsersList() {
     try {
       const response = await getUserDetailsService(id);
       const { username, email, level, avatar } = response.data;
-      setUserUpdateId(id)
+      setUserUpdateId(id);
       setUsername(username);
       setEmail(email);
       setLevel(level);
@@ -104,6 +104,7 @@ function UsersList() {
     setPassword("");
     setLevel("user");
     setAvatar("");
+    setErrorMessage("");
     setModalStatusUserAdd(true);
   };
 
@@ -125,6 +126,7 @@ function UsersList() {
 
   //DO user ADD close modal window
   const handleClickUserAddClose = () => {
+    setErrorMessage("");
     setModalStatusUserAdd(false);
   };
   //! USER ADD
@@ -139,12 +141,12 @@ function UsersList() {
     setEmail(email);
     setLevel(level);
     setAvatar(avatar);
+    setErrorMessage("");
     setModalStatusUserUpdate(true);
   };
 
   //DO user UPDATE routine
   const handleClickUserUpdateSubmit = async () => {
-
     try {
       await updateUserService(userUpdateId, { username, email, password, level, avatar });
       setModalStatusUserUpdate(false);
@@ -160,6 +162,7 @@ function UsersList() {
 
   //DO user UPDATE close modal window
   const handleClickUserUpdateClose = () => {
+    setErrorMessage("");
     setModalStatusUserUpdate(false);
   };
   //! USER UPDATE
@@ -174,13 +177,14 @@ function UsersList() {
     setEmail(email);
     setLevel(level);
     setAvatar(avatar);
+    setErrorMessage("");
     setModalStatusUserDelete(true);
   };
 
   //DO user DELETE routine
   const handleClickUserDeleteSubmit = async () => {
-    try{
-      await deleteUserService(userDeleteId)
+    try {
+      await deleteUserService(userDeleteId);
       getAllUsers();
       setModalStatusUserDelete(false);
     } catch (err) {
@@ -194,6 +198,7 @@ function UsersList() {
 
   //DO user DELETE close modal window
   const handleClickUserDeleteClose = () => {
+    setErrorMessage("");
     setModalStatusUserDelete(false);
   };
   //! USER DELETE
@@ -201,7 +206,7 @@ function UsersList() {
   return (
     <div className="data-list">
       <h1>All users List</h1>
-      <p>{errorMessage}</p>
+      {/* <p>{errorMessage}</p> */}
       <Button onClick={handleClickUserAddOpen} variant="outlined" style={{ marginBottom: "30px" }}>
         Add new user
       </Button>
@@ -271,7 +276,7 @@ function UsersList() {
                 E-mail: {email}
               </Typography>
               <CardActions>
-                <Button onClick={handleClickUserDetailClose} size="small">
+                <Button onClick={handleClickUserDetailClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                   Turn back
                 </Button>
               </CardActions>
@@ -286,6 +291,11 @@ function UsersList() {
         <DialogTitle>Add new user</DialogTitle>
         <DialogContent>
           <FormControl>
+            {errorMessage && (
+              <Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}>
+                <Alert severity="error">{errorMessage}</Alert>
+              </Stack>
+            )}
             <Select value={level} name="level" id="level" onChange={handleLevel}>
               <MenuItem value={"user"}>Select level</MenuItem>
               <MenuItem selected={level === "user" && true} value={"user"}>
@@ -296,22 +306,22 @@ function UsersList() {
               </MenuItem>
             </Select>
 
-            <TextField label="Username: " name="username" id="username" value={username} onChange={handleUsername} aria-describedby="username-helper-text" />
+            <TextField label="Username:* " name="username" id="username" value={username} onChange={handleUsername} aria-describedby="username-helper-text" />
             <FormHelperText id="username-helper-text">Username will be used for login</FormHelperText>
 
-            <TextField label="E-mail: " name="email" id="email" value={email} onChange={handleEmail} aria-describedby="email-helper-text" />
+            <TextField label="E-mail:* " name="email" id="email" value={email} onChange={handleEmail} aria-describedby="email-helper-text" />
             <FormHelperText id="email-helper-text">We'll never share your email.</FormHelperText>
 
-            <TextField label="Password: " name="password" id="password" type="password" value={password} aria-describedby="password-helper-text" onChange={handlePassword} />
+            <TextField label="Password:* " name="password" id="password" type="password" value={password} aria-describedby="password-helper-text" onChange={handlePassword} />
             <FormHelperText id="password-helper-text">Password must have between 8 and 15 characters and contain at least one of: uppercase and lowercase letters, numbers and special characters.</FormHelperText>
 
             <TextField label="Avatar: " name="avatar" id="avatar" value={avatar} aria-describedby="avatar-helper-text" onChange={handleAvatar} />
             <FormHelperText id="avatar-helper-text">Avatar will be the personal icon.</FormHelperText>
             <Stack direction="row" spacing={2}>
-              <Button type="submit" variant="outlined" onClick={handleAddUserSubmit}>
+              <Button type="submit" onClick={handleAddUserSubmit} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
                 Add
               </Button>
-              <Button type="submit" variant="outlined" onClick={handleClickUserAddClose}>
+              <Button type="submit"onClick={handleClickUserAddClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                 Cancel
               </Button>
             </Stack>
@@ -325,6 +335,11 @@ function UsersList() {
         <DialogTitle>Update user</DialogTitle>
         <DialogContent>
           <FormControl>
+            {errorMessage && (
+              <Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}>
+                <Alert severity="error">{errorMessage}</Alert>
+              </Stack>
+            )}
             <Select value={level} name="level" id="level" onChange={handleLevel}>
               <MenuItem value={"user"}>Select level</MenuItem>
               <MenuItem selected={level === "user" && true} value={"user"}>
@@ -335,13 +350,13 @@ function UsersList() {
               </MenuItem>
             </Select>
 
-            <TextField label="Username: " name="username" id="username" value={username} aria-describedby="username-helper-text" onChange={handleUsername} focused />
+            <TextField label="Username:* " name="username" id="username" value={username} aria-describedby="username-helper-text" onChange={handleUsername} focused />
             <FormHelperText id="username-helper-text">Username will be used for login</FormHelperText>
 
-            <TextField label="E-mail: " name="email" id="email" value={email} aria-describedby="email-helper-text" onChange={handleEmail} />
+            <TextField label="E-mail:* " name="email" id="email" value={email} aria-describedby="email-helper-text" onChange={handleEmail} />
             <FormHelperText id="email-helper-text">We'll never share your email.</FormHelperText>
 
-            <TextField label="Password: " name="password" id="password" type="password" value={password} aria-describedby="password-helper-text" onChange={handlePassword} />
+            <TextField label="Password:* " name="password" id="password" type="password" value={password} aria-describedby="password-helper-text" onChange={handlePassword} />
             <FormHelperText id="password-helper-text">Password must have between 8 and 15 characters and contain at least one of: uppercase and lowercase letters, numbers and special characters.</FormHelperText>
 
             <TextField label="Avatar: " name="avatar" id="avatar" value={avatar} aria-describedby="avatar-helper-text" onChange={handleAvatar} />
@@ -363,7 +378,12 @@ function UsersList() {
       <Dialog open={modalStatusUserDelete} onClose={handleClickUserDeleteClose} sx={{ backgroundColor: "red" }}>
         <DialogTitle>Delete user</DialogTitle>
         <DialogContent>
-        <Card sx={{ maxWidth: 345 }}>
+          <Card sx={{ maxWidth: 345 }}>
+            {errorMessage && (
+              <Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}>
+                <Alert severity="error">{errorMessage}</Alert>
+              </Stack>
+            )}
             <CardMedia component="img" height="140" image={avatar} alt="green iguana" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
@@ -375,8 +395,11 @@ function UsersList() {
               <Typography variant="body2" color="text.secondary">
                 E-mail: {email}
               </Typography>
+              <Stack sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }} spacing={2}>
+                <Alert severity="error">{"ATTENTION! This action can not be undone!"}</Alert>
+              </Stack>
               <CardActions>
-              <Button onClick={handleClickUserDeleteSubmit} size="small" variant="outlined" sx={{ backgroundColor: "red" }}>
+                <Button onClick={handleClickUserDeleteSubmit} size="small" variant="outlined" sx={{ backgroundColor: "red" }}>
                   Delete
                 </Button>
                 <Button onClick={handleClickUserDeleteClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
@@ -385,7 +408,6 @@ function UsersList() {
               </CardActions>
             </CardContent>
           </Card>
-
         </DialogContent>
       </Dialog>
       {/* End modal window user delete */}

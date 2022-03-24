@@ -1,5 +1,6 @@
 //DO import needed modules
 import { useState } from "react";
+import { Alert, Stack } from "@mui/material";
 
 function Error() {
 
@@ -8,7 +9,7 @@ function Error() {
   return (
     <div>
       <h1>Error</h1>
-      <p>{errorMessage}</p>
+      {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
     </div>
   );
 }

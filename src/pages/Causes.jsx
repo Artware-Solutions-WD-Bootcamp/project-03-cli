@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faEye, faPencil } from "@fortawesome/free-solid-svg-icons";
-import { Avatar, Button, Card, CardActions, CardContent, CardMedia, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { Avatar, Alert, Button, Card, CardActions, CardContent, CardMedia, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Link, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
 
 function CausesList() {
   //DO create a state to control info
@@ -35,12 +35,12 @@ function CausesList() {
 
   const [active, setActive] = useState(""); // for CausesDetails and CausesUpdate
   const handleActive = (e) => {
-    setActive(e.target.value);
+    setActive(e.target.checked);
   };
 
   const [visible, setVisible] = useState(""); // for CausesDetails and CausesUpdate
   const handleVisible = (e) => {
-    setVisible(e.target.value);
+    setVisible(e.target.checked);
   };
 
   const [assignedAmount, setAssignedAmount] = useState(""); // for CausesDetails and CausesUpdate
@@ -117,6 +117,7 @@ function CausesList() {
   //* CAUSE ADD
   //DO cause ADD open modal window
   const handleClickAddCauseOpen = () => {
+    setErrorMessage("");
     setName("");
     setDescription("");
     setUrl("");
@@ -142,6 +143,7 @@ function CausesList() {
 
   //DO cause ADD close modal window
   const handleClickCauseAddClose = () => {
+    setErrorMessage("");
     setModalStatusCauseAdd(false);
   };
   //! CAUSE ADD
@@ -161,6 +163,7 @@ function CausesList() {
       setVisible(visible);
       setAssignedAmount(assignedAmount);
       setDeliveryProof(deliveryProof);
+      setErrorMessage("");
       setModalStatusCauseUpdate(true);
     } catch (err) {
       if (err.response && err.response.status === 400) {
@@ -187,6 +190,7 @@ function CausesList() {
 
   //DO cause UPDATE close modal window
   const handleClickUpdateCauseClose = () => {
+    setErrorMessage("");
     setModalStatusCauseUpdate(false);
   };
   //! CAUSE UPDATE
@@ -206,6 +210,7 @@ function CausesList() {
       setVisible(visible);
       setAssignedAmount(assignedAmount);
       setDeliveryProof(deliveryProof);
+      setErrorMessage("");
       setModalStatusCauseDelete(true);
     } catch (err) {
       if (err.response && err.response.status === 400) {
@@ -233,6 +238,7 @@ function CausesList() {
 
   //DO cause DELETE close modal window
   const handleClickDeleteCauseClose = () => {
+    setErrorMessage("");
     setModalStatusCauseDelete(false);
   };
   //! CAUSE DELETE
@@ -240,7 +246,7 @@ function CausesList() {
   return (
     <div className="data-list">
       <h1>Causes</h1>
-      <p>{errorMessage}</p>
+      {/* <p>{errorMessage}</p> */}
       <Button onClick={handleClickAddCauseOpen} variant="outlined" style={{ marginBottom: "30px" }}>
         Add new charitable cause
       </Button>
@@ -306,15 +312,7 @@ function CausesList() {
               <Typography variant="body2" color="text.secondary">
                 Description: {description}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                URL: {url}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Active: <Checkbox checked={active} />
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Visible: <Checkbox checked={visible} />
-              </Typography>
+              <hr />
               <Typography variant="body2" color="text.secondary">
                 Assigned amount: {assignedAmount}
               </Typography>
@@ -322,6 +320,11 @@ function CausesList() {
                 Delivery proof: {deliveryProof}
               </Typography>
               <CardActions>
+                <Link href={url} target="blank">
+                  <Button size="small" variant="outlined" sx={{ backgroundColor: "lightGreen", marginRight: 2 }}>
+                    Visit site
+                  </Button>
+                </Link>
                 <Button onClick={handleClickDetailCauseClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                   Turn back
                 </Button>
@@ -336,11 +339,12 @@ function CausesList() {
       <Dialog open={modalStatusCauseAdd} onClose={handleClickCauseAddClose}>
         <DialogTitle>Add new charitable cause</DialogTitle>
         <DialogContent>
+        {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
           <FormControl>
-            <TextField label="Cause name*: " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
+            <TextField label="Cause name:* " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
             <FormHelperText id="name-helper-text"> The charity cause name (required) </FormHelperText>
 
-            <TextField label="Description*: " name="description" id="description" value={description} aria-describedby="description-helper-text" onChange={handleDescription} />
+            <TextField label="Description:* " name="description" id="description" value={description} aria-describedby="description-helper-text" onChange={handleDescription} />
             <FormHelperText id="description-helper-text"> Description of the cause (required) </FormHelperText>
 
             <TextField label="URL: " name="url" id="url" value={url} aria-describedby="url-helper-text" onChange={handleUrl} />
@@ -367,10 +371,11 @@ function CausesList() {
         <DialogTitle>Update charitable cause</DialogTitle>
         <DialogContent>
           <FormControl>
-            <TextField label="Cause name*: " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
+          {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
+            <TextField label="Cause name:* " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
             <FormHelperText id="name-helper-text"> The charity cause name (required) </FormHelperText>
 
-            <TextField label="Description*: " name="description" id="description" value={description} aria-describedby="description-helper-text" onChange={handleDescription} />
+            <TextField label="Description:* " name="description" id="description" value={description} aria-describedby="description-helper-text" onChange={handleDescription} />
             <FormHelperText id="description-helper-text"> Description of the cause (required) </FormHelperText>
 
             <TextField label="URL: " name="url" id="url" value={url} aria-describedby="url-helper-text" onChange={handleUrl} />
@@ -410,6 +415,7 @@ function CausesList() {
         <DialogTitle>Delete charitable cause</DialogTitle>
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
+          {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
             <CardMedia component="img" height="140" image={logo} alt="charity cause image" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
@@ -433,6 +439,9 @@ function CausesList() {
               <Typography variant="body2" color="text.secondary">
                 Delivery proof: {deliveryProof}
               </Typography>
+              <Stack sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }} spacing={2}>
+                <Alert severity="error">{"ATTENTION! This action can not be undone!"}</Alert>
+              </Stack>
               <CardActions>
                 <Button onClick={handleClickDeleteCauseSubmit} size="small" variant="outlined" sx={{ backgroundColor: "red" }}>
                   Delete

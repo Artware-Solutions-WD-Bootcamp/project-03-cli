@@ -7,3 +7,14 @@
   max-width: 500px;
   margin: auto;
 }
+
+body{
+  margin: 0;
+  padding: 0;
+}
+
+.container{
+  height: 93vh;
+  background: url(../src/images/homeBackground.png) no-repeat fixed center;
+  background-size: cover;
+}
