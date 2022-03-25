@@ -81,7 +81,7 @@ function CausesList() {
 
   //DO use loading system to prevent errors
   if (!allCauses) {
-    return <h3>...Loading</h3>;
+    return <div>...Loading</div>;
   }
 
   //* CAUSE DETAIL
@@ -245,7 +245,7 @@ function CausesList() {
 
   return (
     <div className="data-list">
-      <h1>Causes</h1>
+      <h1>Charitable Causes</h1>
       {/* <p>{errorMessage}</p> */}
       <Button onClick={handleClickAddCauseOpen} variant="outlined" style={{ marginBottom: "30px" }}>
         Add new charitable cause
@@ -304,7 +304,7 @@ function CausesList() {
       <Dialog open={modalStatusCauseDetail} onClose={handleClickDetailCauseClose}>
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
-            <CardMedia component="img" height="140" image={logo} alt="charity cause image" />
+            <CardMedia component="img" height="140" image={logo} alt="charitable cause image" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
                 {name}
@@ -342,7 +342,7 @@ function CausesList() {
         {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
           <FormControl>
             <TextField label="Cause name:* " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
-            <FormHelperText id="name-helper-text"> The charity cause name (required) </FormHelperText>
+            <FormHelperText id="name-helper-text"> The charitable cause name (required) </FormHelperText>
 
             <TextField label="Description:* " name="description" id="description" value={description} aria-describedby="description-helper-text" onChange={handleDescription} />
             <FormHelperText id="description-helper-text"> Description of the cause (required) </FormHelperText>
@@ -373,7 +373,7 @@ function CausesList() {
           <FormControl>
           {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
             <TextField label="Cause name:* " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
-            <FormHelperText id="name-helper-text"> The charity cause name (required) </FormHelperText>
+            <FormHelperText id="name-helper-text"> The charitable cause name (required) </FormHelperText>
 
             <TextField label="Description:* " name="description" id="description" value={description} aria-describedby="description-helper-text" onChange={handleDescription} />
             <FormHelperText id="description-helper-text"> Description of the cause (required) </FormHelperText>
@@ -416,7 +416,7 @@ function CausesList() {
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
           {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
-            <CardMedia component="img" height="140" image={logo} alt="charity cause image" />
+            <CardMedia component="img" height="140" image={logo} alt="charitable cause image" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
                 {name}

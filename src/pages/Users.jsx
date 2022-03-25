@@ -66,7 +66,7 @@ function UsersList() {
 
   //DO use loading system to prevent errors
   if (!allUsers) {
-    return <h3>...Loading</h3>;
+    return <div>...Loading</div>;
   }
 
   //* USER DETAIL
@@ -205,7 +205,7 @@ function UsersList() {
 
   return (
     <div className="data-list">
-      <h1>All users List</h1>
+      <h1>Users List</h1>
       {/* <p>{errorMessage}</p> */}
       <Button onClick={handleClickUserAddOpen} variant="outlined" style={{ marginBottom: "30px" }}>
         Add new user

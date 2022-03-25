@@ -18,6 +18,7 @@ import Register from "./pages/auth/Register";
 
 //DO import Charitable Causes related pages
 import Causes from "./pages/Causes";
+import CharityElection from "./pages/CharityElection";
 
 //DO import Collaborator related pages
 import Collabs from "./pages/Collabs";
@@ -51,12 +52,13 @@ function App() {
   };
 
   return (
-    <div className="App" style={switchTheme()}>
+    <div className="App container" style={switchTheme()}>
       <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
 
       <Routes>
         <Route path="/" element={<Home setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/causes" element={<Causes setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/charity-election" element={<CharityElection setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/collabs" element={<Collabs setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/users" element={<Users setIsLoggedIn={setIsLoggedIn} />} />
 

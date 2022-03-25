@@ -16,7 +16,6 @@ function Login(props) {
   //DO handle submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //console.log(`[handleSubmit form username: ${username}, password: ${password}, errorMessage: ${errorMessage}]` )
 
     //! build user object to be sent
     const user = { username, password };
@@ -53,7 +52,6 @@ function Login(props) {
           value={username}
           aria-describedby="username-helper-text"
           onChange={(e) => setUsername(e.target.value)}
-          focused
         />
 
         <TextField

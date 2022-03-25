@@ -27,13 +27,16 @@ function NavBar(props) {
           { <Link to="/" variant="body2" color="inherit">Home</Link> }
           &nbsp;&nbsp;
 
-          { <Link to="/causes" variant="body2" color="inherit">Charity Causes</Link> }
+          { <Link to="/causes" variant="body2" color="inherit">Charitable Causes</Link> }
           &nbsp;&nbsp;
           
           { <Link to="/collabs" variant="body2" color="inherit">Collaborators</Link> }
           &nbsp;&nbsp;
 
           {isLoggedIn && ( <Link to="/users" variant="body2" color="inherit"> Users </Link> )}
+          &nbsp;&nbsp;
+
+          {isLoggedIn && ( <Link to="/charity-election" variant="body2" color="inherit"> Charity elections </Link> )}
           &nbsp;&nbsp;
 
           <Typography sx={{ flexGrow: 1 }}></Typography>

@@ -1,7 +1,7 @@
 //DO import needed modules
 import axios from "axios";
 
-// here we will store all our frontend charity causes routes
+// here we will store all our frontend charitablea causes routes
 
 const service = axios.create({
   baseURL: `${process.env.REACT_APP_SERVER_URL}/causes`,

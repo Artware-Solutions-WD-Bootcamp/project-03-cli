@@ -66,7 +66,7 @@ function CollabList() {
 
   //DO use loading system to prevent errors
   if (!allCollabs) {
-    return <h3>...Loading</h3>;
+    return <div>...Loading</div>;
   }
 
   //* COLLAB DETAIL
@@ -216,7 +216,7 @@ function CollabList() {
 
   return (
     <div className="data-list">
-      <h1>Collab List</h1>
+      <h1>Collaborators</h1>
       {/* <p>{errorMessage}</p> */}
       <Button onClick={handleClickAddCollabOpen} variant="outlined" style={{ marginBottom: "30px" }}>
         Add new collaborator
@@ -275,7 +275,7 @@ function CollabList() {
       <Dialog open={modalStatusCollabDetail} onClose={handleClickDetailCollabClose}>
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
-            <CardMedia component="img" height="140" image={logo} alt="charity cause image" />
+            <CardMedia component="img" height="140" image={logo} alt="charitable cause image" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
                 {name}
@@ -374,7 +374,7 @@ function CollabList() {
           <Card sx={{ maxWidth: 345 }}>
           {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
 
-            <CardMedia component="img" height="140" image={logo} alt="charity cause image" />
+            <CardMedia component="img" height="140" image={logo} alt="charitable cause image" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
                 {name}

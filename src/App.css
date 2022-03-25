@@ -8,13 +8,58 @@
   margin: auto;
 }
 
+.charity-data-list{
+  max-width: 800px;
+  margin: auto;
+}
+
 body{
+  min-height: 100vh;
   margin: 0;
   padding: 0;
 }
 
 .container{
-  height: 93vh;
-  background: url(../src/images/homeBackground.png) no-repeat fixed center;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background: url(../src/images/homeBackground.jpg) no-repeat fixed center;
   background-size: cover;
+}
+
+.responsive {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+}
+
+.image1, .image2, .image3, .image4 {
+  width: 300px;
+  height: 300px;
+}
+.image1{
+  position: absolute;
+  background: url(../src/images/ayudar.png) no-repeat center;
+  margin-left: 5%;
+  margin-top: 5rem;
+}
+.image2{
+  position: absolute;
+  background: url(../src/images/compras.png) no-repeat center;
+  margin-left: 17%;
+  margin-top: 33rem;
+}
+.image3{
+  position: absolute;
+  background: url(../src/images/voz.png) no-repeat center;
+  margin-left: 60%;
+  margin-top: 3rem;
+}
+.image4{
+  position: absolute;
+  background: url(../src/images/solidaria.png) no-repeat center;
+  width: 400px;
+  height: 400px;
+  margin-left: 70%;
+  margin-top: 28rem;
 }
