@@ -149,8 +149,8 @@ function UsersList() {
   const handleClickUserUpdateSubmit = async () => {
     try {
       await updateUserService(userUpdateId, { username, email, password, level, avatar });
-      setModalStatusUserUpdate(false);
       getAllUsers();
+      setModalStatusUserUpdate(false);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -218,9 +218,9 @@ function UsersList() {
             <TableRow>
               <TableCell align="center">Avatar</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell align="center">V</TableCell>
-              <TableCell align="center">E</TableCell>
-              <TableCell align="center">D</TableCell>
+              <TableCell align="center">View</TableCell>
+              <TableCell align="center">Edit</TableCell>
+              <TableCell align="center">Del</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

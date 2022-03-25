@@ -46,7 +46,7 @@ function Login(props) {
 
       <FormControl>
         <TextField
-          label="Username: "
+          label="Username:* "
           name="username"
           id="username"
           value={username}
@@ -55,7 +55,7 @@ function Login(props) {
         />
 
         <TextField
-          label="Password: "
+          label="Password:* "
           name="password"
           id="password"
           type="password"

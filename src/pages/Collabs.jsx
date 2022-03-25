@@ -229,9 +229,9 @@ function CollabList() {
             <TableRow>
               <TableCell align="center">Avatar</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell align="center">V</TableCell>
-              <TableCell align="center">E</TableCell>
-              <TableCell align="center">D</TableCell>
+              <TableCell align="center">View</TableCell>
+              <TableCell align="center">Edit</TableCell>
+              <TableCell align="center">Del</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

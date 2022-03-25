@@ -2,14 +2,12 @@
 import { getAllCharityElectionService, getCharityElectionDetailsService, addNewCharityElectionService, updateCharityElectionService, deleteCharityElectionService } from "../services/charityElection.services";
 import { getAllCausesService } from "../services/cause.services";
 import { getAllUsersService } from "../services/user.services";
-import axios from "axios";
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { Alert, Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
-import { AdapterDateFns, LocalizationProvider, DateTimePicker } from "@mui/lab";
 
 function CharityElection() {
   //DO create a state to control info
@@ -87,11 +85,6 @@ function CharityElection() {
     }
   };
 
-  //DO use loading system to prevent errors
-  if (!allCharityElectionsData) {
-    return <div>...Loading</div>;
-  }
-
   //* CHARITY ELECTIONS ADD
   //DO charityElections ADD open modal window
   const handleClickAddCharityElectionOpen = () => {
@@ -152,6 +145,7 @@ function CharityElection() {
   const handleClickUpdateSubmit = async () => {
     try {
       await updateCharityElectionService(charityElectionUpdateId, { ownerID, charityID, date, points });
+      getAllCharityElections();
       setModalStatusWindowUpdate(false);
     } catch (err) {
       if (err.response && err.response.status === 400) {
@@ -172,7 +166,6 @@ function CharityElection() {
   //* CHARITY ELECTIONS DELETE
   //DO charityElections DELETE open modal window
   const handleClickDeleteCharityElectionOpen = async (id) => {
-
     try {
       const response = await getCharityElectionDetailsService(id);
       const { ownerID, charityID, date, points } = response.data;
@@ -213,6 +206,10 @@ function CharityElection() {
     setModalStatusWindowsDelete(false);
   };
   //! CHARITY ELECTIONS DELETE
+  //DO use loading system to prevent errors
+  if (!allCharityElectionsData || !allCausesData || !allUsersData) {
+    return <div>...Loading</div>;
+  }
 
   return (
     <div className="charity-data-list">
@@ -230,9 +227,9 @@ function CharityElection() {
               <TableCell align="center">Associate</TableCell>
               <TableCell>Charity Cause</TableCell>
               <TableCell align="center">Date</TableCell>
-              <TableCell align="center">Points</TableCell>
-              <TableCell align="center">E</TableCell>
-              <TableCell align="center">D</TableCell>
+              <TableCell align="center">Pts</TableCell>
+              <TableCell align="center">Edit</TableCell>
+              <TableCell align="center">Del</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -240,7 +237,7 @@ function CharityElection() {
               return (
                 <TableRow key={index + eachCharityElection.ownerID} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                   <TableCell align="center" component="th" scope="row">
-                    {/* <Typography>{eachCharityElection.ownerID.username}</Typography> */}
+                    <Typography>{eachCharityElection.ownerID.username}</Typography>
                   </TableCell>
                   <TableCell>
                     <Typography>{eachCharityElection.charityID.name}</Typography>
@@ -374,7 +371,7 @@ function CharityElection() {
 
             <DialogActions>
               <Button type="submit" onClick={handleClickUpdateSubmit} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
-                Add
+                Save
               </Button>
               <Button type="submit" onClick={handleClickCharityElectionUpdateClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                 Cancel
@@ -385,13 +382,16 @@ function CharityElection() {
       </Dialog>
       {/* End modal window charity election update */}
 
-
       {/* Begin modal window charity election delete */}
       <Dialog open={modalStatusWindowsDelete} onClose={handleClickDeleteCharityElectionClose} sx={{ backgroundColor: "red" }}>
         <DialogTitle>Delete Charity Election</DialogTitle>
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
-          {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
+            {errorMessage && (
+              <Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}>
+                <Alert severity="error">{errorMessage}</Alert>
+              </Stack>
+            )}
 
             {/* <CardMedia component="img" height="140" image={logo} alt="charitable cause image" /> */}
             <CardContent>

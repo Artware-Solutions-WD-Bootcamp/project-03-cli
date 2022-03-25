@@ -53,20 +53,19 @@ function Register() {
       <p>{errorMessage}</p>
       <FormControl>
         <TextField
-          label="Username: "
+          label="Username:* "
           name="username"
           id="username"
           value={username}
           aria-describedby="username-helper-text"
           onChange={handleUsername}
-          focused
-        />
+          />
         <FormHelperText id="username-helper-text">
           Username will be used for login
         </FormHelperText>
 
         <TextField
-          label="E-mail: "
+          label="E-mail:* "
           name="email"
           id="email"
           value={email}
@@ -78,7 +77,7 @@ function Register() {
         </FormHelperText>
 
         <TextField
-          label="Password: "
+          label="Password:* "
           name="password"
           id="password"
           type="password"

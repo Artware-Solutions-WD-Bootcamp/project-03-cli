@@ -256,11 +256,11 @@ function CausesList() {
         <Table sx={{ minWidth: 300 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell align="center">Avatar</TableCell>
+              <TableCell align="center">Logo</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell align="center">V</TableCell>
-              <TableCell align="center">E</TableCell>
-              <TableCell align="center">D</TableCell>
+              <TableCell align="center">View</TableCell>
+              <TableCell align="center">Edit</TableCell>
+              <TableCell align="center">Del</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
