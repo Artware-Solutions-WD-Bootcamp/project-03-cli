@@ -92,10 +92,10 @@ function Register() {
           characters.
         </FormHelperText>
         <Stack direction="row" spacing={2}>
-        <Button type="submit" variant="outlined" onClick={handleSubmit}>
+        <Button type="submit" onClick={handleSubmit} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
           Add
         </Button>
-        <Button type="submit" variant="outlined" onClick={() => navigate(-1)}>
+        <Button type="submit" onClick={() => navigate(-1)} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
           Cancel
         </Button>
         </Stack>

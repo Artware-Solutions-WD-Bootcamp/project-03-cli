@@ -64,10 +64,10 @@ function Login(props) {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Stack direction="row" spacing={2}>
-          <Button type="submit" variant="outlined" onClick={handleSubmit}>
+          <Button type="submit" onClick={handleSubmit} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
             Login
           </Button>
-          <Button type="submit" variant="outlined" onClick={() => navigate(-1)}>
+          <Button type="submit" onClick={() => navigate(-1)} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
             Go back
           </Button>
         </Stack>
