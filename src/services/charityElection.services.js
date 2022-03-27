@@ -17,29 +17,29 @@ service.interceptors.request.use((config) => {
   return config;
 });
 
-const getAllCharityElectionService = () => {
+const getAllCharityElectionsService = () => {
   return service.get("/");
-};
-
-const addNewCharityElectionService = (newCharityElection) => {
-  return service.post("/", newCharityElection);
 };
 
 const getCharityElectionDetailsService = (id) => {
   return service.get(`/${id}`);
 };
 
-const updateCharityElectionService = (id, updatedCharityElection) => {
-  return service.patch(`/${id}`, updatedCharityElection)
+const postCharityElectionService = (newCharityElection) => {
+  return service.post("/", newCharityElection);
+};
+
+const patchCharityElectionService = (id, patchedCharityElection) => {
+  return service.patch(`/${id}`, patchedCharityElection)
 }
 
 const deleteCharityElectionService = (id) => {
   return service.delete(`/${id}`);
 };
 export {
-  getAllCharityElectionService,
-  addNewCharityElectionService,
+  getAllCharityElectionsService,
   getCharityElectionDetailsService,
-  updateCharityElectionService,
+  postCharityElectionService,
+  patchCharityElectionService,
   deleteCharityElectionService,
 };

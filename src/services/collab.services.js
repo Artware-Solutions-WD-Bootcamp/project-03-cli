@@ -4,7 +4,7 @@ import axios from "axios";
 // here we will store all our frontend collaborators routes
 
 const service = axios.create({
-  baseURL: `${process.env.REACT_APP_SERVER_URL}/collabs`,
+  baseURL: `${process.env.REACT_APP_SERVER_URL}/collab`,
 });
 
 // send Token on each request
@@ -21,12 +21,12 @@ const getAllCollabsService = () => {
   return service.get("/");
 };
 
-const addNewCollabService = (newCollab) => {
-  return service.post("/", newCollab);
-};
-
 const getCollabDetailsService = (id) => {
   return service.get(`/${id}`);
+};
+
+const addNewCollabService = (newCollab) => {
+  return service.post("/", newCollab);
 };
 
 const updateCollabService = (id, updatedCollab) => {
@@ -38,8 +38,8 @@ const deleteCollabService = (id) => {
 };
 export {
   getAllCollabsService,
-  addNewCollabService,
   getCollabDetailsService,
+  addNewCollabService,
   updateCollabService,
   deleteCollabService,
 };

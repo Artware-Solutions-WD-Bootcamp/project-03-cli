@@ -4,7 +4,7 @@ import axios from "axios";
 // here we will store all our frontend user routes
 
 const service = axios.create({
-  baseURL: `${process.env.REACT_APP_SERVER_URL}/users`,
+  baseURL: `${process.env.REACT_APP_SERVER_URL}/user`,
 });
 
 // send Token on each request
@@ -21,13 +21,13 @@ const getAllUsersService = () => {
   return service.get("/");
 };
 
-const addNewUserService = (newUser) => {
-  return service.post("/", newUser);
-};
-
 const getUserDetailsService = (id) => {
   return service.get(`/${id}`);
 };
+
+const addNewUserService = (newUser) => {
+  return service.post("/", newUser);
+};  
 
 const updateUserService = (id, updatedUser) => {
   return service.patch(`/${id}`, updatedUser)
@@ -38,8 +38,8 @@ const deleteUserService = (id) => {
 };
 export {
   getAllUsersService,
-  addNewUserService,
   getUserDetailsService,
+  addNewUserService,
   updateUserService,
   deleteUserService,
 };

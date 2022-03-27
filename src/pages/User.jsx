@@ -5,13 +5,22 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faEye, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { Avatar, Alert, Button, Card, CardActions, CardContent, CardMedia, Dialog, DialogContent, DialogTitle, FormControl, FormHelperText, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { ClipLoader } from "react-spinners";
 
 function UsersList() {
   //DO create a state to control info
-  const [allUsers, setAllUsers] = useState(null);
+  const [modalWindowStatusDetails, setModalWindowStatusDetails] = useState(false);
+  const [modalWindowStatusAdd, setModalWindowStatusAdd] = useState(false);
+  const [modalWindowStatusPatch, setModalWindowStatusPatch] = useState(false);
+  const [modalWindowStatusDelete, setModalWindowStatusDelete] = useState(false);
 
-  const [userUpdateId, setUserUpdateId] = useState(null);
-  const [userDeleteId, setUserDeleteId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  //const [loading, setLoading] = useState(true);
+
+  const [patchId, setPatchId] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+
+  const [allUsers, setAllUsers] = useState(null);
 
   const [username, setUsername] = useState("");
   const handleUsername = (e) => {
@@ -38,19 +47,13 @@ function UsersList() {
     setAvatar(e.target.value);
   };
 
-  const [modalStatusUserDetail, setModalStatusUserDetail] = useState(false); // userDetail modal state
-  const [modalStatusUserAdd, setModalStatusUserAdd] = useState(false); // userAdd modal state
-  const [modalStatusUserUpdate, setModalStatusUserUpdate] = useState(false); // userUpdate modal state
-  const [modalStatusUserDelete, setModalStatusUserDelete] = useState(false); // userDelete modal state
-
-  const [errorMessage, setErrorMessage] = useState("");
-
   //DO navigator hook
   const navigate = useNavigate();
 
   //DO useEffect to look for info
   useEffect(() => {
     getAllUsers();
+    //setLoading(false);
   }, []);
 
   //DO async function to obtain data from DB
@@ -64,23 +67,19 @@ function UsersList() {
     }
   };
 
-  //DO use loading system to prevent errors
-  if (!allUsers) {
-    return <div>...Loading</div>;
-  }
-
   //* USER DETAIL
-  //DO user DETAIL open modal window
-  const handleClickUserDetailOpen = async (id) => {
+  //DO modal window open DETAILS
+  const handleClickModalWindowOpenDetails = async (id) => {
     try {
       const response = await getUserDetailsService(id);
       const { username, email, level, avatar } = response.data;
-      setUserUpdateId(id);
+      //setUserUpdateId(id);
       setUsername(username);
       setEmail(email);
       setLevel(level);
       setAvatar(avatar);
-      setModalStatusUserDetail(true);
+
+      setModalWindowStatusDetails(true);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -90,31 +89,32 @@ function UsersList() {
     }
   };
 
-  //DO user DETAIL close modal window
-  const handleClickUserDetailClose = () => {
-    setModalStatusUserDetail(false);
+  //DO modal window close DETAILS
+  const handleClickModalWindowCloseDetails = () => {
+    setModalWindowStatusDetails(false);
   };
   //! USER DETAIL
 
   //* USER ADD
-  //DO user ADD open modal window
-  const handleClickUserAddOpen = async (id) => {
+  //DO modal window open ADD
+  const handleClickModalWindowOpenAdd = async (id) => {
     setUsername("");
     setEmail("");
     setPassword("");
     setLevel("user");
     setAvatar("");
+
     setErrorMessage("");
-    setModalStatusUserAdd(true);
+    setModalWindowStatusAdd(true);
   };
 
-  //DO user ADD routine
-  const handleAddUserSubmit = async () => {
+  //DO routine ADD
+  const handleClickSubmitAdd = async () => {
     try {
       const newUser = { username, email, password, level, avatar };
       await addNewUserService(newUser);
       getAllUsers();
-      setModalStatusUserAdd(false);
+      setModalWindowStatusAdd(false);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -124,33 +124,34 @@ function UsersList() {
     }
   };
 
-  //DO user ADD close modal window
-  const handleClickUserAddClose = () => {
+  //DO modal window close ADD
+  const handleClickModalWindowCloseAdd = () => {
     setErrorMessage("");
-    setModalStatusUserAdd(false);
+    setModalWindowStatusAdd(false);
   };
   //! USER ADD
 
   //* USER UPDATE
-  //DO user UPDATE open modal window
-  const handleClickUserUpdateOpen = async (id) => {
+  //DO modal window open UPDATE
+  const handleClickModalWindowOpenPatch = async (id) => {
     const response = await getUserDetailsService(id);
     const { username, email, level, avatar } = response.data;
-    setUserUpdateId(id);
+    setPatchId(id);
     setUsername(username);
     setEmail(email);
     setLevel(level);
     setAvatar(avatar);
+
     setErrorMessage("");
-    setModalStatusUserUpdate(true);
+    setModalWindowStatusPatch(true);
   };
 
-  //DO user UPDATE routine
-  const handleClickUserUpdateSubmit = async () => {
+  //DO routine UPDATE
+  const handleClickSubmitPatch = async () => {
     try {
-      await updateUserService(userUpdateId, { username, email, password, level, avatar });
+      await updateUserService(patchId, { username, email, password, level, avatar });
       getAllUsers();
-      setModalStatusUserUpdate(false);
+      setModalWindowStatusPatch(false);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -160,33 +161,34 @@ function UsersList() {
     }
   };
 
-  //DO user UPDATE close modal window
-  const handleClickUserUpdateClose = () => {
+  //DO modal window close UPDATE
+  const handleClickModalWindowClosePatch = () => {
     setErrorMessage("");
-    setModalStatusUserUpdate(false);
+    setModalWindowStatusPatch(false);
   };
   //! USER UPDATE
 
   //* USER DELETE
-  //DO user DELETE open modal window
-  const handleClickUserDeleteOpen = async (id) => {
+  //DO modal window open DELETE
+  const handleClickModalWindowOpenDelete = async (id) => {
     const response = await getUserDetailsService(id);
     const { username, email, level, avatar } = response.data;
-    setUserDeleteId(id);
+    setDeleteId(id);
     setUsername(username);
     setEmail(email);
     setLevel(level);
     setAvatar(avatar);
+      
     setErrorMessage("");
-    setModalStatusUserDelete(true);
-  };
+    setModalWindowStatusDelete(true);
+};
 
-  //DO user DELETE routine
-  const handleClickUserDeleteSubmit = async () => {
+  //DO DELETE routine
+  const handleClickSubmitDelete = async () => {
     try {
-      await deleteUserService(userDeleteId);
+      await deleteUserService(deleteId);
       getAllUsers();
-      setModalStatusUserDelete(false);
+      setModalWindowStatusDelete(false);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -196,18 +198,23 @@ function UsersList() {
     }
   };
 
-  //DO user DELETE close modal window
-  const handleClickUserDeleteClose = () => {
+  //DO DELETE modal window close
+  const handleClickModalWindowCloseDelete = () => {
     setErrorMessage("");
-    setModalStatusUserDelete(false);
+    setModalWindowStatusDelete(false);
   };
   //! USER DELETE
+
+  //DO use loading system to prevent errors
+  if (!allUsers) {
+    return ( <div><br /><br /><ClipLoader color="red" size={50} /></div> );
+  }
 
   return (
     <div className="data-list">
       <h1>Users List</h1>
       {/* <p>{errorMessage}</p> */}
-      <Button onClick={handleClickUserAddOpen} variant="outlined" style={{ marginBottom: "30px" }}>
+      <Button onClick={handleClickModalWindowOpenAdd} variant="outlined" style={{ marginBottom: "30px" }}>
         Add new user
       </Button>
 
@@ -233,21 +240,21 @@ function UsersList() {
                   <TableCell>{eachUser.username}</TableCell>
                   <TableCell align="center">
                     <Tooltip title="View details">
-                      <Button onClick={() => handleClickUserDetailOpen(eachUser._id)}>
+                      <Button onClick={() => handleClickModalWindowOpenDetails(eachUser._id)}>
                         <FontAwesomeIcon icon={faEye} color={"green"} style={{ maxWidth: "1rem", maxHeight: "1rem", minWidth: "1rem", minHeight: "1rem1rem" }} />
                       </Button>
                     </Tooltip>
                   </TableCell>
                   <TableCell align="center">
                     <Tooltip title="Update">
-                      <Button onClick={() => handleClickUserUpdateOpen(eachUser._id)}>
+                      <Button onClick={() => handleClickModalWindowOpenPatch(eachUser._id)}>
                         <FontAwesomeIcon icon={faPencil} color={"blue"} style={{ maxWidth: "1rem", maxHeight: "1rem", minWidth: "1rem", minHeight: "1rem" }} />
                       </Button>
                     </Tooltip>
                   </TableCell>
                   <TableCell align="center">
                     <Tooltip title="Delete">
-                      <Button onClick={() => handleClickUserDeleteOpen(eachUser._id)}>
+                      <Button onClick={() => handleClickModalWindowOpenDelete(eachUser._id)}>
                         <FontAwesomeIcon icon={faEraser} color={"red"} style={{ maxWidth: "1rem", maxHeight: "1rem", minWidth: "1rem", minHeight: "1rem" }} />
                       </Button>
                     </Tooltip>
@@ -261,7 +268,7 @@ function UsersList() {
       {/* End modal window all users list */}
 
       {/* Begin modal window user detail */}
-      <Dialog open={modalStatusUserDetail} onClose={handleClickUserDetailClose}>
+      <Dialog open={modalWindowStatusDetails} onClose={handleClickModalWindowCloseDetails}>
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
             <CardMedia component="img" height="140" image={avatar} alt="green iguana" />
@@ -276,7 +283,7 @@ function UsersList() {
                 E-mail: {email}
               </Typography>
               <CardActions>
-                <Button onClick={handleClickUserDetailClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
+                <Button onClick={handleClickModalWindowCloseDetails} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                   Turn back
                 </Button>
               </CardActions>
@@ -287,7 +294,7 @@ function UsersList() {
       {/* End modal window user detail */}
 
       {/* Begin modal window user add */}
-      <Dialog open={modalStatusUserAdd} onClose={handleClickUserAddClose}>
+      <Dialog open={modalWindowStatusAdd} onClose={handleClickModalWindowCloseAdd}>
         <DialogTitle>Add new user</DialogTitle>
         <DialogContent>
           <FormControl>
@@ -318,10 +325,10 @@ function UsersList() {
             <TextField label="Avatar: " name="avatar" id="avatar" value={avatar} aria-describedby="avatar-helper-text" onChange={handleAvatar} />
             <FormHelperText id="avatar-helper-text">Avatar will be the personal icon.</FormHelperText>
             <Stack direction="row" spacing={2}>
-              <Button type="submit" onClick={handleAddUserSubmit} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
+              <Button type="submit" onClick={handleClickSubmitAdd} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
                 Add
               </Button>
-              <Button type="submit"onClick={handleClickUserAddClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
+              <Button type="submit" onClick={handleClickModalWindowCloseAdd} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                 Cancel
               </Button>
             </Stack>
@@ -331,7 +338,7 @@ function UsersList() {
       {/* End modal window user add */}
 
       {/* Begin modal window user update */}
-      <Dialog open={modalStatusUserUpdate} onClose={handleClickUserUpdateClose}>
+      <Dialog open={modalWindowStatusPatch} onClose={handleClickModalWindowClosePatch}>
         <DialogTitle>Update user</DialogTitle>
         <DialogContent>
           <FormControl>
@@ -362,10 +369,10 @@ function UsersList() {
             <TextField label="Avatar: " name="avatar" id="avatar" value={avatar} aria-describedby="avatar-helper-text" onChange={handleAvatar} />
             <FormHelperText id="avatar-helper-text">Avatar will be the personal icon.</FormHelperText>
             <Stack direction="row" spacing={2}>
-              <Button type="submit" onClick={handleClickUserUpdateSubmit} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
+              <Button type="submit" onClick={handleClickSubmitPatch} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
                 Save
               </Button>
-              <Button type="submit" onClick={handleClickUserUpdateClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
+              <Button type="submit" onClick={handleClickModalWindowClosePatch} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                 Cancel
               </Button>
             </Stack>
@@ -375,7 +382,7 @@ function UsersList() {
       {/* End modal window user update */}
 
       {/* Begin modal window user delete */}
-      <Dialog open={modalStatusUserDelete} onClose={handleClickUserDeleteClose} sx={{ backgroundColor: "red" }}>
+      <Dialog open={modalWindowStatusDelete} onClose={handleClickModalWindowCloseDelete} sx={{ backgroundColor: "red" }}>
         <DialogTitle>Delete user</DialogTitle>
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
@@ -399,10 +406,10 @@ function UsersList() {
                 <Alert severity="error">{"ATTENTION! This action can not be undone!"}</Alert>
               </Stack>
               <CardActions>
-                <Button onClick={handleClickUserDeleteSubmit} size="small" variant="outlined" sx={{ backgroundColor: "red" }}>
+                <Button onClick={handleClickSubmitDelete} size="small" variant="outlined" sx={{ backgroundColor: "red" }}>
                   Delete
                 </Button>
-                <Button onClick={handleClickUserDeleteClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
+                <Button onClick={handleClickModalWindowCloseDelete} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                   Cancel
                 </Button>
               </CardActions>

@@ -1,22 +1,29 @@
 //DO import needed modules
-import { getAllCharityElectionService, getCharityElectionDetailsService, addNewCharityElectionService, updateCharityElectionService, deleteCharityElectionService } from "../services/charityElection.services";
-import { getAllCausesService } from "../services/cause.services";
+import { getAllCharityElectionsService, getCharityElectionDetailsService, postCharityElectionService, patchCharityElectionService, deleteCharityElectionService } from "../services/charityElection.services";
+import { getAllCharitiesService } from "../services/charity.services";
 import { getAllUsersService } from "../services/user.services";
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faPencil } from "@fortawesome/free-solid-svg-icons";
-import { Alert, Button, Card, CardActions, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Button, Card, CardActions, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { ClipLoader } from "react-spinners";
 
 function CharityElection() {
-  //DO create a state to control info
-  const [allCharityElectionsData, setAllCharityElections] = useState(null);
-  const [allCausesData, setAllCausesData] = useState(null);
-  const [allUsersData, setAllUsersData] = useState(null);
+  //DO create states to control info
+  const [modalWindowStatusAdd, setModalWindowStatusAdd] = useState(false);
+  const [modalWindowStatusPatch, setModalWindowStatusPatch] = useState(false);
+  const [modalWindowStatusDelete, setModalWindowStatusDelete] = useState(false);
 
-  const [charityElectionUpdateId, setCharityElectionUpdateId] = useState(null);
-  const [charityElectionDeleteId, setCharityElectionDeleteId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  //const [loading, setLoading] = useState(true);
+
+  const [patchId, setPatchId] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+
+  const [allUsersData, setAllUsersData] = useState(null);
+  const [allCharitiesData, setAllCharitiesData] = useState(null);
+  const [allCharityElectionsData, setAllCharityElections] = useState(null);
 
   const [ownerID, setOwnerID] = useState("");
   const handleOwnerID = (e) => {
@@ -38,33 +45,33 @@ function CharityElection() {
     setPoints(e.target.value);
   };
 
-  const [modalStatusWindowAdd, setModalStatusAdd] = useState(false); // addCause modal state
-  const [modalStatusWindowUpdate, setModalStatusWindowUpdate] = useState(false); // updateCause modal state
-  const [modalStatusWindowsDelete, setModalStatusWindowsDelete] = useState(false); // updateCause modal state
+  const [charityName, setCharityName] = useState("");
+  const handleCharityName = (e) => {
+    setPoints(e.target.value);
+  };
 
-  const [errorMessage, setErrorMessage] = useState("");
+  const [charityLogo, setCharityLogo] = useState("");
+  const handleCharityLogo = (e) => {
+    setPoints(e.target.value);
+  };
+
+  const [userName, setUserName] = useState("");
+  const handleUserName = (e) => {
+    setPoints(e.target.value);
+  };
 
   //DO navigator hook
   const navigate = useNavigate();
 
   //DO useEffect to look for info
   useEffect(() => {
-    getAllCharityElections();
     getAllUsers();
-    getAllCauses();
+    getAllCharities();
+    getAllCharityElections();
+    //setLoading(false);
   }, []);
 
-  //DO async functions to obtain Charity Elections, Users and Causes data from DB
-  const getAllCharityElections = async () => {
-    try {
-      //? obtain info from DB
-      const allCharityElectionsData = await getAllCharityElectionService();
-      setAllCharityElections(allCharityElectionsData.data);
-    } catch (err) {
-      navigate("/error");
-    }
-  };
-
+  //DO async functions to obtain data from DB
   const getAllUsers = async () => {
     try {
       //? obtain info from DB
@@ -75,34 +82,45 @@ function CharityElection() {
     }
   };
 
-  const getAllCauses = async () => {
+  const getAllCharities = async () => {
     try {
       //? obtain info from DB
-      const allCausesData = await getAllCausesService();
-      setAllCausesData(allCausesData.data);
+      const allCharitiesData = await getAllCharitiesService();
+      setAllCharitiesData(allCharitiesData.data);
+    } catch (err) {
+      navigate("/error");
+    }
+  };
+
+  const getAllCharityElections = async () => {
+    try {
+      //? obtain info from DB
+      const allCharityElectionsData = await getAllCharityElectionsService();
+      setAllCharityElections(allCharityElectionsData.data);
     } catch (err) {
       navigate("/error");
     }
   };
 
   //* CHARITY ELECTIONS ADD
-  //DO charityElections ADD open modal window
-  const handleClickAddCharityElectionOpen = () => {
+  //DO modal window open ADD
+  const handleClickModalWindowOpenAdd = () => {
     setOwnerID("");
     setCharityID("");
     setDate("");
     setPoints("");
+
     setErrorMessage("");
-    setModalStatusAdd(true);
+    setModalWindowStatusAdd(true);
   };
 
-  //DO charityElections ADD routine
-  const handleAddCharityElectionSubmit = async () => {
+  //DO routine ADD
+  const handleClickSubmitAdd = async () => {
     try {
       const newCharityElection = { ownerID, charityID, date, points };
-      await addNewCharityElectionService(newCharityElection);
+      await postCharityElectionService(newCharityElection);
       getAllCharityElections();
-      setModalStatusAdd(false);
+      setModalWindowStatusAdd(false);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -112,26 +130,27 @@ function CharityElection() {
     }
   };
 
-  //DO charityElections ADD close modal window
-  const handleClickCharityElectionAddClose = () => {
+  //DO modal window close ADD
+  const handleClickModalWindowCloseAdd = () => {
     setErrorMessage("");
-    setModalStatusAdd(false);
+    setModalWindowStatusAdd(false);
   };
   //! CHARITY ELECTIONS ADD
 
   //* CHARITY ELECTIONS UPDATE
-  //DO charityElections UPDATE open modal window
-  const handleClickUpdateCharityElectionOpen = async (id) => {
+  //DO modal window open UPDATE
+  const handleClickModalWindowOpenPatch = async (id) => {
     try {
       const response = await getCharityElectionDetailsService(id);
       const { ownerID, charityID, date, points } = response.data;
-      setCharityElectionUpdateId(id);
+      setPatchId(id);
       setOwnerID(ownerID);
       setCharityID(charityID);
       setDate(date);
       setPoints(points);
+
       setErrorMessage("");
-      setModalStatusWindowUpdate(true);
+      setModalWindowStatusPatch(true);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -141,12 +160,12 @@ function CharityElection() {
     }
   };
 
-  //DO charityElections UPDATE routine
-  const handleClickUpdateSubmit = async () => {
+  //DO routine UPDATE
+  const handleClickSubmitPatch = async () => {
     try {
-      await updateCharityElectionService(charityElectionUpdateId, { ownerID, charityID, date, points });
+      await patchCharityElectionService(patchId, { ownerID, charityID, date, points });
       getAllCharityElections();
-      setModalStatusWindowUpdate(false);
+      setModalWindowStatusPatch(false);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -156,26 +175,30 @@ function CharityElection() {
     }
   };
 
-  //DO charityElections UPDATE close modal windows
-  const handleClickCharityElectionUpdateClose = () => {
+  //DO modal window close UPDATE
+  const handleClickModalWindowClosePatch = () => {
     setErrorMessage("");
-    setModalStatusWindowUpdate(false);
+    setModalWindowStatusPatch(false);
   };
   //! CHARITY ELECTIONS UPDATE
 
   //* CHARITY ELECTIONS DELETE
-  //DO charityElections DELETE open modal window
-  const handleClickDeleteCharityElectionOpen = async (id) => {
+  //DO modal window open DELETE
+  const handleClickModalWindowOpenDelete = async (id) => {
     try {
       const response = await getCharityElectionDetailsService(id);
-      const { ownerID, charityID, date, points } = response.data;
-      setCharityElectionDeleteId(id);
+      const { ownerID, charityID, date, points, charityName, charityLogo, userName } = response.data;
+      setDeleteId(id);
       setOwnerID(ownerID);
       setCharityID(charityID);
       setDate(date);
       setPoints(points);
+      setCharityName(charityName);
+      setCharityLogo(charityLogo);
+      setUserName(userName);
+
       setErrorMessage("");
-      setModalStatusWindowsDelete(true);
+      setModalWindowStatusDelete(true);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -185,12 +208,12 @@ function CharityElection() {
     }
   };
 
-  //DO charityElections DELETE routine
-  const handleClickDeleteCharityElectionSubmit = async () => {
+  //DO DELETE routine
+  const handleClickSubmitDelete = async () => {
     try {
-      await deleteCharityElectionService(charityElectionDeleteId);
+      await deleteCharityElectionService(deleteId);
       getAllCharityElections();
-      setModalStatusWindowsDelete(false);
+      setModalWindowStatusDelete(false);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -200,22 +223,23 @@ function CharityElection() {
     }
   };
 
-  //DO charityElections DELETE close modal window
-  const handleClickDeleteCharityElectionClose = () => {
+  //DO DELETE modal window close
+  const handleClickModalWindowCloseDelete = () => {
     setErrorMessage("");
-    setModalStatusWindowsDelete(false);
+    setModalWindowStatusDelete(false);
   };
   //! CHARITY ELECTIONS DELETE
+
   //DO use loading system to prevent errors
-  if (!allCharityElectionsData || !allCausesData || !allUsersData) {
-    return <div>...Loading</div>;
+  if (!allUsersData || !allCharitiesData || !allCharityElectionsData) {
+    return ( <div><br /><br /><ClipLoader color="red" size={50} /></div> );
   }
 
   return (
     <div className="charity-data-list">
       <h1>Charity election</h1>
       {/* <p>{errorMessage}</p> */}
-      <Button onClick={handleClickAddCharityElectionOpen} variant="outlined" style={{ marginBottom: "30px" }}>
+      <Button onClick={handleClickModalWindowOpenAdd} variant="outlined" style={{ marginBottom: "30px" }}>
         Add new charity election
       </Button>
 
@@ -250,14 +274,14 @@ function CharityElection() {
                   </TableCell>
                   <TableCell align="center">
                     <Tooltip title="Update">
-                      <Button onClick={() => handleClickUpdateCharityElectionOpen(eachCharityElection._id)} style={{ maxWidth: "30px", maxHeight: "30px", minWidth: "30px", minHeight: "30px" }}>
+                      <Button onClick={() => handleClickModalWindowOpenPatch(eachCharityElection._id)} style={{ maxWidth: "30px", maxHeight: "30px", minWidth: "30px", minHeight: "30px" }}>
                         <FontAwesomeIcon icon={faPencil} color={"blue"} />
                       </Button>
                     </Tooltip>
                   </TableCell>
                   <TableCell align="center">
                     <Tooltip title="Delete">
-                      <Button onClick={() => handleClickDeleteCharityElectionOpen(eachCharityElection._id)} style={{ maxWidth: "30px", maxHeight: "30px", minWidth: "30px", minHeight: "30px" }}>
+                      <Button onClick={() => handleClickModalWindowOpenDelete(eachCharityElection._id)} style={{ maxWidth: "30px", maxHeight: "30px", minWidth: "30px", minHeight: "30px" }}>
                         <FontAwesomeIcon icon={faEraser} color={"red"} />
                       </Button>
                     </Tooltip>
@@ -271,7 +295,7 @@ function CharityElection() {
       {/* End all Charity Elections list*/}
 
       {/* Begin modal window charity election add */}
-      <Dialog open={modalStatusWindowAdd} onClose={handleClickCharityElectionAddClose}>
+      <Dialog open={modalWindowStatusAdd} onClose={handleClickModalWindowCloseAdd}>
         <DialogTitle>Add new charity election</DialogTitle>
         <DialogContent>
           {errorMessage && (
@@ -302,10 +326,10 @@ function CharityElection() {
               <MenuItem value="" disabled>
                 Select Charity Cause
               </MenuItem>
-              {allCausesData.map((eachCause) => {
+              {allCharitiesData.map((eachCharity) => {
                 return (
-                  <MenuItem key={eachCause._id} value={eachCause._id}>
-                    {eachCause.name}
+                  <MenuItem key={eachCharity._id} value={eachCharity._id}>
+                    {eachCharity.name}
                   </MenuItem>
                 );
               })}
@@ -314,10 +338,10 @@ function CharityElection() {
             <FormHelperText id="date-helper-text"> Date since when will be effective </FormHelperText>
 
             <DialogActions>
-              <Button type="submit" onClick={handleAddCharityElectionSubmit} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
+              <Button type="submit" onClick={handleClickSubmitAdd} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
                 Add
               </Button>
-              <Button type="submit" onClick={handleClickCharityElectionAddClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
+              <Button type="submit" onClick={handleClickModalWindowCloseAdd} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                 Cancel
               </Button>
             </DialogActions>
@@ -327,7 +351,7 @@ function CharityElection() {
       {/* End modal window charity election add */}
 
       {/* Begin modal window charity election update */}
-      <Dialog open={modalStatusWindowUpdate} onClose={handleClickCharityElectionUpdateClose}>
+      <Dialog open={modalWindowStatusPatch} onClose={handleClickModalWindowClosePatch}>
         <DialogTitle>Update Charity Election</DialogTitle>
         <DialogContent>
           {errorMessage && (
@@ -358,10 +382,10 @@ function CharityElection() {
               <MenuItem value="" disabled>
                 Select Charity Cause
               </MenuItem>
-              {allCausesData.map((eachCause) => {
+              {allCharitiesData.map((eachCharity) => {
                 return (
-                  <MenuItem key={eachCause._id} value={eachCause._id}>
-                    {eachCause.name}
+                  <MenuItem key={eachCharity._id} value={eachCharity._id}>
+                    {eachCharity.name}
                   </MenuItem>
                 );
               })}
@@ -370,10 +394,10 @@ function CharityElection() {
             <FormHelperText id="date-helper-text"> Date since when will be effective </FormHelperText>
 
             <DialogActions>
-              <Button type="submit" onClick={handleClickUpdateSubmit} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
+              <Button type="submit" onClick={handleClickSubmitPatch} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
                 Save
               </Button>
-              <Button type="submit" onClick={handleClickCharityElectionUpdateClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
+              <Button type="submit" onClick={handleClickModalWindowClosePatch} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                 Cancel
               </Button>
             </DialogActions>
@@ -383,8 +407,8 @@ function CharityElection() {
       {/* End modal window charity election update */}
 
       {/* Begin modal window charity election delete */}
-      <Dialog open={modalStatusWindowsDelete} onClose={handleClickDeleteCharityElectionClose} sx={{ backgroundColor: "red" }}>
-        <DialogTitle>Delete Charity Election</DialogTitle>
+      <Dialog open={modalWindowStatusDelete} onClose={handleClickModalWindowCloseDelete} sx={{ backgroundColor: "red" }}>
+        <DialogTitle>Delete Charitable Election</DialogTitle>
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
             {errorMessage && (
@@ -393,13 +417,13 @@ function CharityElection() {
               </Stack>
             )}
 
-            {/* <CardMedia component="img" height="140" image={logo} alt="charitable cause image" /> */}
+            <CardMedia component="img" height="140" image={charityLogo} alt="charitable cause image" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
-                Owner: {ownerID}
+                Owner: {userName}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Charity cause: {charityID}
+                Charitable cause: {charityName}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Date: {date}
@@ -411,10 +435,10 @@ function CharityElection() {
                 <Alert severity="error">{"ATTENTION! This action can not be undone!"}</Alert>
               </Stack>
               <CardActions>
-                <Button onClick={() => handleClickDeleteCharityElectionSubmit(charityElectionDeleteId)} size="small" variant="outlined" sx={{ backgroundColor: "red" }}>
+                <Button onClick={() => handleClickSubmitDelete(deleteId)} size="small" variant="outlined" sx={{ backgroundColor: "red" }}>
                   Delete
                 </Button>
-                <Button onClick={handleClickDeleteCharityElectionClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
+                <Button onClick={handleClickModalWindowCloseDelete} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                   Cancel
                 </Button>
               </CardActions>

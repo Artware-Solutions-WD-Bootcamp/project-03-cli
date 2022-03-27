@@ -28,7 +28,7 @@ function Login(props) {
       props.setIsLoggedIn(true);
 
       //! redirect client to private page
-      navigate(`/users`);
+      navigate(`/charity`);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);

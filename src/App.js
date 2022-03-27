@@ -16,15 +16,15 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
-//DO import Charitable Causes related pages
-import Causes from "./pages/Causes";
+//DO import Charity related pages
+import Charity from "./pages/Charity";
 import CharityElection from "./pages/CharityElection";
 
 //DO import Collaborator related pages
-import Collabs from "./pages/Collabs";
+import Collab from "./pages/Collab";
 
 //DO import User related pages
-import Users from "./pages/Users";
+import User from "./pages/User";
 
 //DO import stylesheets
 import "./App.css";
@@ -56,17 +56,17 @@ function App() {
       <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
 
       <Routes>
-        <Route path="/" element={<Home setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/causes" element={<Causes setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/charity-election" element={<CharityElection setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/collabs" element={<Collabs setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/users" element={<Users setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/" element={<Home isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/charity" element={<Charity isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/charity-election" element={<CharityElection isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/collab" element={<Collab isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/user" element={<User isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
 
-        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="/register" element={<Register setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/login" element={<Login isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/register" element={<Register isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
 
-        <Route path="/error" element={<Error setIsLoggedIn={setIsLoggedIn} />} />
-        <Route path="*" element={<NotFound setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="/error" element={<Error isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
+        <Route path="*" element={<NotFound isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />} />
       </Routes>
     </div>
   );

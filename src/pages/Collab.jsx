@@ -5,13 +5,24 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faEye, faPencil } from "@fortawesome/free-solid-svg-icons";
 import { Avatar, Alert, Button, Card, CardActions, CardContent, CardMedia, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, Link, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { ClipLoader } from "react-spinners";
 
-function CollabList() {
+function CollabList(props) {
+  const { isLoggedIn } = props;
+
   //DO create a state to control info
-  const [allCollabs, setAllCollabs] = useState(null);
+  const [modalWindowStatusDetails, setModalWindowStatusDetails] = useState(false);
+  const [modalWindowStatusAdd, setModalWindowStatusAdd] = useState(false);
+  const [modalWindowStatusPatch, setModalWindowStatusPatch] = useState(false);
+  const [modalWindowStatusDelete, setModalWindowStatusDelete] = useState(false);
 
-  const [collabUpdateId, setCollabUpdateId] = useState(null);
-  const [collabDeleteId, setCollabDeleteId] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  //const [loading, setLoading] = useState(true);
+
+  const [patchId, setPatchId] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+
+  const [allCollabs, setAllCollabs] = useState(null);
 
   const [name, setName] = useState("");
   const handleName = (e) => {
@@ -33,17 +44,10 @@ function CollabList() {
     setLogo(e.target.value);
   };
 
-  const [visibility, setVisibility] = useState("");
+  const [visibility, setVisibility] = useState(true);
   const handleVisibility = (e) => {
     setVisibility(e.target.checked);
   };
-
-  const [modalStatusCollabDetail, setModalStatusCollabDetail] = useState(false); // updateCause modal state
-  const [modalStatusCollabAdd, setModalStatusCollabAdd] = useState(false); // addCause modal state
-  const [modalStatusCollabUpdate, setModalStatusCollabUpdate] = useState(false); // updateCause modal state
-  const [modalStatusCollabDelete, setModalStatusCollabDelete] = useState(false); // updateCause modal state
-
-  const [errorMessage, setErrorMessage] = useState("");
 
   //DO navigator hook
   const navigate = useNavigate();
@@ -51,6 +55,7 @@ function CollabList() {
   //DO useEffect to look for info
   useEffect(() => {
     getAllCollabs();
+    //setLoading(false);
   }, []);
 
   //DO async function to obtain data from DB
@@ -64,14 +69,9 @@ function CollabList() {
     }
   };
 
-  //DO use loading system to prevent errors
-  if (!allCollabs) {
-    return <div>...Loading</div>;
-  }
-
   //* COLLAB DETAIL
-  //DO collab DETAIL open modal window
-  const handleClickDetailCollabOpen = async (id) => {
+  //DO modal window open DETAILS
+  const handleClickModalWindowOpenDetails = async (id) => {
     try {
       const response = await getCollabDetailsService(id);
       const { name, description, registerUrl, logo, visibility } = response.data;
@@ -80,7 +80,8 @@ function CollabList() {
       setRegisterUrl(registerUrl);
       setLogo(logo);
       setVisibility(visibility);
-      setModalStatusCollabDetail(true);
+
+      setModalWindowStatusDetails(true);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -90,30 +91,32 @@ function CollabList() {
     }
   };
 
-  //DO collab DETAIL close modal window
-  const handleClickDetailCollabClose = () => {
-    setModalStatusCollabDetail(false);
+  //DO modal window close DETAILS
+  const handleClickModalWindowCloseDetails = () => {
+    setModalWindowStatusDetails(false);
   };
   //! COLLAB DETAIL
 
   //* COLLAB ADD
-  //DO collab ADD open modal window
-  const handleClickAddCollabOpen = () => {
+  //DO modal window open ADD
+  const handleClickModalWindowOpenAdd = () => {
     setName("");
     setDescription("");
     setRegisterUrl("");
     setLogo("");
     setVisibility("");
-    setModalStatusCollabAdd(true);
+
+    setErrorMessage("");
+    setModalWindowStatusAdd(true);
   };
 
-  //DO collab ADD routine
-  const handleAddCollabSubmit = async () => {
+  //DO routine ADD
+  const handleClickSubmitAdd = async () => {
     try {
       const newCause = { name, description, registerUrl, logo };
       await addNewCollabService(newCause);
       getAllCollabs();
-      setModalStatusCollabAdd(false);
+      setModalWindowStatusAdd(false);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -123,25 +126,28 @@ function CollabList() {
     }
   };
 
-  //DO collab ADD close modal window
-  const handleClickCollabAddClose = () => {
-    setModalStatusCollabAdd(false);
+  //DO modal window close ADD
+  const handleClickModalWindowCloseAdd = () => {
+    setErrorMessage("");
+    setModalWindowStatusAdd(false);
   };
   //! COLLAB ADD
 
   //* COLLAB UPDATE
-  //DO collab UPDATE open modal window
-  const handleClickUpdateCollabOpen = async (id) => {
+  //DO modal window open UPDATE
+  const handleClickModalWindowOpenPatch = async (id) => {
     try {
       const response = await getCollabDetailsService(id);
       const { name, description, registerUrl, logo, visibility } = response.data;
-      setCollabUpdateId(id);
+      setPatchId(id);
       setName(name);
       setDescription(description);
       setRegisterUrl(registerUrl);
       setLogo(logo);
       setVisibility(visibility);
-      setModalStatusCollabUpdate(true);
+
+      setErrorMessage("");
+      setModalWindowStatusPatch(true);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -151,11 +157,12 @@ function CollabList() {
     }
   };
 
-  //DO collab UPDATE routine
-  const handleClickUpdateSubmit = async () => {
+  //DO routine UPDATE
+  const handleClickSubmitPatch = async () => {
     try {
-      await updateCollabService(collabUpdateId, { name, description, registerUrl, logo, visibility });
-      setModalStatusCollabUpdate(false);
+      await updateCollabService(patchId, { name, description, registerUrl, logo, visibility });
+      getAllCollabs();
+      setModalWindowStatusPatch(false);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -165,25 +172,28 @@ function CollabList() {
     }
   };
 
-  //DO collab UPDATE close modal windows
-  const handleClickUpdateCollabClose = () => {
-    setModalStatusCollabUpdate(false);
+  //DO modal window close UPDATE
+  const handleClickModalWindowClosePatch = () => {
+    setErrorMessage("");
+    setModalWindowStatusPatch(false);
   };
   //! COLLAB UPDATE
 
   //* COLLAB DELETE
-  //DO collab DELETE open modal window
-  const handleClickDeleteCollabOpen = async (id) => {
+  //DO modal window open DELETE
+  const handleClickModalWindowOpenDelete = async (id) => {
     try {
       const response = await getCollabDetailsService(id);
       const { name, description, registerUrl, logo, visibility } = response.data;
-      setCollabDeleteId(id);
+      setDeleteId(id);
       setName(name);
       setDescription(description);
       setRegisterUrl(registerUrl);
       setLogo(logo);
       setVisibility(visibility);
-      setModalStatusCollabDelete(true);
+      
+      setErrorMessage("");
+      setModalWindowStatusDelete(true);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -193,12 +203,12 @@ function CollabList() {
     }
   };
 
-  //DO collab DELETE routine
-  const handleClickDeleteCollabSubmit = async () => {
+  //DO DELETE routine
+  const handleClickSubmitDelete = async () => {
     try {
-      await deleteCollabService(collabDeleteId);
+      await deleteCollabService(deleteId);
       getAllCollabs();
-      setModalStatusCollabDelete(false);
+      setModalWindowStatusDelete(false);
     } catch (err) {
       if (err.response && err.response.status === 400) {
         setErrorMessage(err.response.data.errorMessage);
@@ -208,19 +218,27 @@ function CollabList() {
     }
   };
 
-  //DO collab DELETE close modal window
-  const handleClickDeleteCollabClose = () => {
-    setModalStatusCollabDelete(false);
+  //DO DELETE modal window close
+  const handleClickModalWindowCloseDelete = () => {
+    setErrorMessage("");
+    setModalWindowStatusDelete(false);
   };
   //! COLLAB DELETE
+
+  //DO use loading system to prevent errors
+  if (!allCollabs) {
+    return ( <div><br /><br /><ClipLoader color="red" size={50} /></div> );
+  }
 
   return (
     <div className="data-list">
       <h1>Collaborators</h1>
-      {/* <p>{errorMessage}</p> */}
-      <Button onClick={handleClickAddCollabOpen} variant="outlined" style={{ marginBottom: "30px" }}>
-        Add new collaborator
-      </Button>
+
+      {isLoggedIn && (
+        <Button onClick={handleClickModalWindowOpenAdd} variant="outlined" style={{ marginBottom: "30px" }}>
+          Add new collaborator
+        </Button>
+      )}
 
       {/* Begin modal window all collaborator list */}
       <TableContainer component={Paper}>
@@ -230,8 +248,8 @@ function CollabList() {
               <TableCell align="center">Avatar</TableCell>
               <TableCell>Name</TableCell>
               <TableCell align="center">View</TableCell>
-              <TableCell align="center">Edit</TableCell>
-              <TableCell align="center">Del</TableCell>
+              {isLoggedIn && <TableCell align="center">Edit</TableCell>}
+              {isLoggedIn && <TableCell align="center">Del</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -244,25 +262,29 @@ function CollabList() {
                   <TableCell>{eachCollab.name}</TableCell>
                   <TableCell align="center">
                     <Tooltip title="View details">
-                      <Button onClick={() => handleClickDetailCollabOpen(eachCollab._id)} style={{ maxWidth: "30px", maxHeight: "30px", minWidth: "30px", minHeight: "30px" }}>
+                      <Button onClick={() => handleClickModalWindowOpenDetails(eachCollab._id)} style={{ maxWidth: "30px", maxHeight: "30px", minWidth: "30px", minHeight: "30px" }}>
                         <FontAwesomeIcon icon={faEye} color={"green"} />
                       </Button>
                     </Tooltip>
                   </TableCell>
-                  <TableCell align="center">
-                    <Tooltip title="Update">
-                      <Button onClick={() => handleClickUpdateCollabOpen(eachCollab._id)} style={{ maxWidth: "30px", maxHeight: "30px", minWidth: "30px", minHeight: "30px" }}>
-                        <FontAwesomeIcon icon={faPencil} color={"blue"} />
-                      </Button>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell align="center">
-                    <Tooltip title="Delete">
-                      <Button onClick={() => handleClickDeleteCollabOpen(eachCollab._id)} style={{ maxWidth: "30px", maxHeight: "30px", minWidth: "30px", minHeight: "30px" }}>
-                        <FontAwesomeIcon icon={faEraser} color={"red"} />
-                      </Button>
-                    </Tooltip>
-                  </TableCell>
+                  {isLoggedIn && (
+                    <TableCell align="center">
+                      <Tooltip title="Update">
+                        <Button onClick={() => handleClickModalWindowOpenPatch(eachCollab._id)} style={{ maxWidth: "30px", maxHeight: "30px", minWidth: "30px", minHeight: "30px" }}>
+                          <FontAwesomeIcon icon={faPencil} color={"blue"} />
+                        </Button>
+                      </Tooltip>
+                    </TableCell>
+                  )}
+                  {isLoggedIn && (
+                    <TableCell align="center">
+                      <Tooltip title="Delete">
+                        <Button onClick={() => handleClickModalWindowOpenDelete(eachCollab._id)} style={{ maxWidth: "30px", maxHeight: "30px", minWidth: "30px", minHeight: "30px" }}>
+                          <FontAwesomeIcon icon={faEraser} color={"red"} />
+                        </Button>
+                      </Tooltip>
+                    </TableCell>
+                  )}
                 </TableRow>
               );
             })}
@@ -272,10 +294,10 @@ function CollabList() {
       {/* End modal window all collaborator list*/}
 
       {/* Begin modal window collaborator detail */}
-      <Dialog open={modalStatusCollabDetail} onClose={handleClickDetailCollabClose}>
+      <Dialog open={modalWindowStatusDetails} onClose={handleClickModalWindowCloseDetails}>
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
-            <CardMedia component="img" height="140" image={logo} alt="charitable cause image" />
+            <CardMedia component="img" height="140" image={logo} alt="charity image" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
                 {name}
@@ -289,7 +311,7 @@ function CollabList() {
                     Visit site
                   </Button>
                 </Link>
-                <Button onClick={handleClickDetailCollabClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
+                <Button onClick={handleClickModalWindowCloseDetails} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                   Turn back
                 </Button>
               </CardActions>
@@ -300,11 +322,15 @@ function CollabList() {
       {/* End modal window collaborator detail*/}
 
       {/* Begin modal window collaborator add */}
-      <Dialog open={modalStatusCollabAdd} onClose={handleClickCollabAddClose}>
+      <Dialog open={modalWindowStatusAdd} onClose={handleClickModalWindowCloseAdd}>
         <DialogTitle>Add new collaborator</DialogTitle>
         <DialogContent>
           <FormControl>
-          {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
+            {errorMessage && (
+              <Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}>
+                <Alert severity="error">{errorMessage}</Alert>
+              </Stack>
+            )}
 
             <TextField label="Collaborator name:* " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
             <FormHelperText id="name-helper-text"> Collaborator name (required) </FormHelperText>
@@ -319,10 +345,10 @@ function CollabList() {
             <FormHelperText id="logo-helper-text"> Collaborator logo </FormHelperText>
 
             <DialogActions>
-              <Button type="submit" onClick={handleAddCollabSubmit} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
+              <Button type="submit" onClick={handleClickSubmitAdd} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
                 Add
               </Button>
-              <Button type="submit" onClick={handleClickCollabAddClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
+              <Button type="submit" onClick={handleClickModalWindowCloseAdd} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                 Cancel
               </Button>
             </DialogActions>
@@ -332,11 +358,15 @@ function CollabList() {
       {/* End modal window collaborator add */}
 
       {/* Begin modal window collaborator update */}
-      <Dialog open={modalStatusCollabUpdate} onClose={handleClickUpdateCollabClose}>
+      <Dialog open={modalWindowStatusPatch} onClose={handleClickModalWindowClosePatch}>
         <DialogTitle>Update collaborator</DialogTitle>
         <DialogContent>
           <FormControl>
-          {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
+            {errorMessage && (
+              <Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}>
+                <Alert severity="error">{errorMessage}</Alert>
+              </Stack>
+            )}
 
             <TextField label="Cause name:* " name="name" id="name" value={name} aria-describedby="name-helper-text" onChange={handleName} />
             <FormHelperText id="name-helper-text"> Collaborator name (required) </FormHelperText>
@@ -355,10 +385,10 @@ function CollabList() {
             </Typography>
 
             <DialogActions>
-              <Button type="submit" onClick={handleClickUpdateSubmit} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
+              <Button type="submit" onClick={handleClickSubmitPatch} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
                 Save
               </Button>
-              <Button type="submit" onClick={handleClickUpdateCollabClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
+              <Button type="submit" onClick={handleClickModalWindowClosePatch} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                 Cancel
               </Button>
             </DialogActions>
@@ -368,13 +398,17 @@ function CollabList() {
       {/* End modal window collaborator update */}
 
       {/* Begin modal window collaborator delete */}
-      <Dialog open={modalStatusCollabDelete} onClose={handleClickDeleteCollabClose} sx={{ backgroundColor: "red" }}>
+      <Dialog open={modalWindowStatusDelete} onClose={handleClickModalWindowCloseDelete} sx={{ backgroundColor: "red" }}>
         <DialogTitle>Delete collaborator</DialogTitle>
         <DialogContent>
           <Card sx={{ maxWidth: 345 }}>
-          {errorMessage && (<Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}><Alert severity="error">{errorMessage}</Alert></Stack>)}
+            {errorMessage && (
+              <Stack sx={{ width: "100%", marginBottom: "1rem" }} spacing={2}>
+                <Alert severity="error">{errorMessage}</Alert>
+              </Stack>
+            )}
 
-            <CardMedia component="img" height="140" image={logo} alt="charitable cause image" />
+            <CardMedia component="img" height="140" image={logo} alt="charity image" />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
                 {name}
@@ -392,10 +426,10 @@ function CollabList() {
                 <Alert severity="error">{"ATTENTION! This action can not be undone!"}</Alert>
               </Stack>
               <CardActions>
-                <Button onClick={handleClickDeleteCollabSubmit} size="small" variant="outlined" sx={{ backgroundColor: "red" }}>
+                <Button onClick={handleClickSubmitDelete} size="small" variant="outlined" sx={{ backgroundColor: "red" }}>
                   Delete
                 </Button>
-                <Button onClick={handleClickDeleteCollabClose} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
+                <Button onClick={handleClickModalWindowCloseDelete} size="small" variant="outlined" sx={{ backgroundColor: "lightBlue" }}>
                   Cancel
                 </Button>
               </CardActions>
