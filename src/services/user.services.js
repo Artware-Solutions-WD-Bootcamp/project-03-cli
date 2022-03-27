@@ -17,29 +17,35 @@ service.interceptors.request.use((config) => {
   return config;
 });
 
+// GET all users
 const getAllUsersService = () => {
   return service.get("/");
 };
 
+// GET user's details based on it's ID
 const getUserDetailsService = (id) => {
   return service.get(`/${id}`);
 };
 
-const addNewUserService = (newUser) => {
+// CREATE a new user
+const postUserService = (newUser) => {
   return service.post("/", newUser);
 };  
 
-const updateUserService = (id, updatedUser) => {
-  return service.patch(`/${id}`, updatedUser)
+// UPDATE existing user based on it's ID
+const patchUserService = (id, patchedUser) => {
+  return service.patch(`/${id}`, patchedUser)
 }
 
+// DELETE existing user based on it's ID
 const deleteUserService = (id) => {
   return service.delete(`/${id}`);
 };
+
 export {
   getAllUsersService,
   getUserDetailsService,
-  addNewUserService,
-  updateUserService,
+  postUserService,
+  patchUserService,
   deleteUserService,
 };

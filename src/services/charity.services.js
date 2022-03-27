@@ -17,22 +17,27 @@ service.interceptors.request.use((config) => {
   return config;
 });
 
+// GET all charities
 const getAllCharitiesService = () => {
   return service.get("/");
 };
 
+// GET a charity details based on it's ID
 const getCharityDetailsService = (id) => {
   return service.get(`/${id}`);
 };
 
+// CREATE a new charity
 const postCharityService = (newCharity) => {
   return service.post("/", newCharity);
 };
 
+// UPDATE existing charity based on it's ID
 const patchCharityService = (id, patchedCharity) => {
   return service.patch(`/${id}`, patchedCharity)
 }
 
+// DELETE existing charity based on it's ID
 const deleteCharityService = (id) => {
   return service.delete(`/${id}`);
 };

@@ -1,5 +1,5 @@
 //DO import needed modules
-import { getAllCollabsService, addNewCollabService, getCollabDetailsService, updateCollabService, deleteCollabService } from "../services/collab.services";
+import { getAllCollabsService, postCollabService, getCollabDetailsService, patchCollabService, deleteCollabService } from "../services/collab.services";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -114,7 +114,7 @@ function CollabList(props) {
   const handleClickSubmitAdd = async () => {
     try {
       const newCause = { name, description, registerUrl, logo };
-      await addNewCollabService(newCause);
+      await postCollabService(newCause);
       getAllCollabs();
       setModalWindowStatusAdd(false);
     } catch (err) {
@@ -160,7 +160,7 @@ function CollabList(props) {
   //DO routine UPDATE
   const handleClickSubmitPatch = async () => {
     try {
-      await updateCollabService(patchId, { name, description, registerUrl, logo, visibility });
+      await patchCollabService(patchId, { name, description, registerUrl, logo, visibility });
       getAllCollabs();
       setModalWindowStatusPatch(false);
     } catch (err) {

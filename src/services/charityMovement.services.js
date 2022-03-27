@@ -17,29 +17,34 @@ service.interceptors.request.use((config) => {
   return config;
 });
 
-const getAllCyarityMovementsService = () => {
+// GET all charities fund movements
+const getAllCharityMovementsService = () => {
   return service.get("/");
 };
 
-const addNewCyarityMovementService = (newCharityMovement) => {
-  return service.post("/", newCharityMovement);
-};
-
-const getCyarityMovementDetailsService = (id) => {
+// GET charity's details based on it's ID
+const getCharityMovementDetailsService = (id) => {
   return service.get(`/${id}`);
 };
 
-const updateCyarityMovementService = (id, updatedCharityMovement) => {
-  return service.patch(`/${id}`, updatedCharityMovement)
+// CREATE a new charity movement
+const postCharityMovementService = (newCharityMovement) => {
+  return service.post("/", newCharityMovement);
+};
+
+// UPDATE existing charity movement based on it's ID
+const patchCharityMovementService = (id, patchedCharityMovement) => {
+  return service.patch(`/${id}`, patchedCharityMovement)
 }
 
-const deleteCyarityMovementService = (id) => {
+// DELETE existing charity movement based on it's ID
+const deleteCharityMovementService = (id) => {
   return service.delete(`/${id}`);
 };
 export {
-  getAllCyarityMovementsService,
-  addNewCyarityMovementService,
-  getCyarityMovementDetailsService,
-  updateCyarityMovementService,
-  deleteCyarityMovementService,
+  getAllCharityMovementsService,
+  getCharityMovementDetailsService,
+  postCharityMovementService,
+  patchCharityMovementService,
+  deleteCharityMovementService,
 };

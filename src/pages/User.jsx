@@ -1,5 +1,5 @@
 //DO import needed modules
-import { getAllUsersService, getUserDetailsService, addNewUserService, updateUserService, deleteUserService } from "../services/user.services";
+import { getAllUsersService, getUserDetailsService, postUserService, patchUserService, deleteUserService } from "../services/user.services";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -73,7 +73,6 @@ function UsersList() {
     try {
       const response = await getUserDetailsService(id);
       const { username, email, level, avatar } = response.data;
-      //setUserUpdateId(id);
       setUsername(username);
       setEmail(email);
       setLevel(level);
@@ -112,7 +111,7 @@ function UsersList() {
   const handleClickSubmitAdd = async () => {
     try {
       const newUser = { username, email, password, level, avatar };
-      await addNewUserService(newUser);
+      await postUserService(newUser);
       getAllUsers();
       setModalWindowStatusAdd(false);
     } catch (err) {
@@ -149,7 +148,7 @@ function UsersList() {
   //DO routine UPDATE
   const handleClickSubmitPatch = async () => {
     try {
-      await updateUserService(patchId, { username, email, password, level, avatar });
+      await patchUserService(patchId, { username, email, password, level, avatar });
       getAllUsers();
       setModalWindowStatusPatch(false);
     } catch (err) {

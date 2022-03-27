@@ -17,29 +17,34 @@ service.interceptors.request.use((config) => {
   return config;
 });
 
+// GET all collaborators
 const getAllCollabsService = () => {
   return service.get("/");
 };
 
+// GET collaborator's details based on it's ID
 const getCollabDetailsService = (id) => {
   return service.get(`/${id}`);
 };
 
-const addNewCollabService = (newCollab) => {
+// CREATE a new collaborator
+const postCollabService = (newCollab) => {
   return service.post("/", newCollab);
 };
 
-const updateCollabService = (id, updatedCollab) => {
-  return service.patch(`/${id}`, updatedCollab)
+// UPDATE existing collaborator based on it's ID
+const patchCollabService = (id, patchedCollab) => {
+  return service.patch(`/${id}`, patchedCollab)
 }
 
+// DELETE existing collaborator based on it's ID
 const deleteCollabService = (id) => {
   return service.delete(`/${id}`);
 };
 export {
   getAllCollabsService,
   getCollabDetailsService,
-  addNewCollabService,
-  updateCollabService,
+  postCollabService,
+  patchCollabService,
   deleteCollabService,
 };

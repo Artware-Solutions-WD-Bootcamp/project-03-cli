@@ -44,7 +44,7 @@ function Login(props) {
       <h3>Login</h3>
       <p>{errorMessage}</p>
 
-      <FormControl>
+      <FormControl sx={{ maxWidth: 300, background: "lightgray", padding: 2 }}>
         <TextField
           label="Username:* "
           name="username"

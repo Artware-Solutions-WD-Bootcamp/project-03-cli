@@ -49,9 +49,9 @@ function Register() {
   };
   return (
     <div>
-      <h3>Registrarse</h3>
+      <h3>Register</h3>
       <p>{errorMessage}</p>
-      <FormControl>
+      <FormControl sx={{ maxWidth: 300, background: "lightgray", padding: 2 }}>
         <TextField
           label="Username:* "
           name="username"

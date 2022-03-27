@@ -31,7 +31,6 @@ import "./App.css";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const { switchTheme } = useContext(ThemeContext);
 
   useEffect(() => {
@@ -39,8 +38,8 @@ function App() {
   }, []);
 
   const verifyUser = async () => {
-    // connect to server and validate token
     try {
+      // connect to server and validate token
       await verifyService();
 
       // change isLoggedIn state to true
