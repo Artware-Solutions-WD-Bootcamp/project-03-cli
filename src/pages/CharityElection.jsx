@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEraser, faPencil } from "@fortawesome/free-solid-svg-icons";
-import { Alert, Button, Card, CardActions, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, MenuItem, Paper, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, CardActions, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormHelperText, MenuItem, Paper, Select, Slider, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
 import { ClipLoader } from "react-spinners";
 
 function CharityElection() {
@@ -232,7 +232,13 @@ function CharityElection() {
 
   //DO use loading system to prevent errors
   if (!allUsersData || !allCharitiesData || !allCharityElectionsData) {
-    return ( <div><br /><br /><ClipLoader color="red" size={50} /></div> );
+    return (
+      <div>
+        <br />
+        <br />
+        <ClipLoader color="red" size={50} />
+      </div>
+    );
   }
 
   return (
@@ -317,8 +323,12 @@ function CharityElection() {
                 );
               })}
             </Select>
-            <TextField type="number" label="Points:* " name="points" id="points" value={points} aria-describedby="points-helper-text" onChange={handlePoints} />
-            <FormHelperText id="points-helper-text"> Select desired points (max. 10) </FormHelperText>
+
+            <Box sx={{ paddingLeft: 2, paddingRight: 2, marginTop: 1 }}>
+              <Typography>Points:</Typography>
+              <Slider aria-label="Points:" valueLabelDisplay="auto" step={1} marks min={1} max={10} name="points" id="points" value={points} onChange={handlePoints} />
+              <FormHelperText id="points-helper-text"> Select desired points (between 1-10) </FormHelperText>
+            </Box>
           </FormControl>
 
           <FormControl>
@@ -336,7 +346,6 @@ function CharityElection() {
             </Select>
             <TextField label="Date:* " name="date" id="date" value={date} aria-describedby="date-helper-text" onChange={handleDate} />
             <FormHelperText id="date-helper-text"> Date since when will be effective </FormHelperText>
-
             <DialogActions>
               <Button type="submit" onClick={handleClickSubmitAdd} size="small" variant="outlined" sx={{ backgroundColor: "lightGreen" }}>
                 Add
@@ -373,8 +382,12 @@ function CharityElection() {
                 );
               })}
             </Select>
-            <TextField type="number" label="Points:* " name="points" id="points" value={points} aria-describedby="points-helper-text" onChange={handlePoints} />
-            <FormHelperText id="points-helper-text"> Select desired points (max. 10) </FormHelperText>
+
+            <Box sx={{ paddingLeft: 2, paddingRight: 2, marginTop: 1 }}>
+              <Typography>Points:</Typography>
+              <Slider aria-label="Points:" defaultValue={points} valueLabelDisplay="auto" step={1} marks min={1} max={10} name="points" id="points" value={points} onChange={handlePoints} />
+              <FormHelperText id="points-helper-text"> Select desired points (between 1-10) </FormHelperText>
+            </Box>
           </FormControl>
 
           <FormControl>
